@@ -454,13 +454,11 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;
 /* ════════════════════════════════════════════════════
    SETTINGS VIEW
 ════════════════════════════════════════════════════ */
-@keyframes spin{to{transform:rotate(360deg)}}
 .stpl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
-.stpl{border:2px solid var(--br);border-radius:var(--r8);padding:10px;cursor:pointer;
-  background:var(--s2);text-align:center;font-size:12px;font-weight:300;
-  color:var(--txt2);transition:all .2s;user-select:none;-webkit-user-select:none;
-  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.stpl.on{border-color:var(--gold) !important;color:var(--gold) !important;background:rgba(186,142,67,.12) !important;font-weight:500}
+.stpl{border:1px solid var(--br);border-radius:var(--r8);padding:10px;cursor:pointer;
+  background:var(--s2);text-align:center;font-size:11px;font-weight:300;
+  color:var(--txt3);transition:all .2s}
+.stpl.on{border-color:var(--br2);color:var(--txt);background:var(--s3)}
 .stamp-prev{display:flex;justify-content:center;background:var(--s2);
   border:1px solid var(--br);border-radius:var(--r12);padding:16px;margin-bottom:12px}
 .csw{width:24px;height:24px;border-radius:6px;cursor:pointer;
@@ -484,7 +482,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;
 .seg-btn{flex:1;padding:9px;border:none;border-radius:100px;background:transparent;
   color:var(--txt3);font-family:'Inter',system-ui,sans-serif;font-size:12px;font-weight:300;
   cursor:pointer;transition:all .2s}
-.seg-btn.priv-btn{color:var(--silv)}.seg-btn.priv-btn.on{background:rgba(136,153,170,.12);color:var(--silv)}.seg-btn.on{background:var(--s3);color:var(--txt);border:1px solid var(--br)}
+.seg-btn.on{background:var(--s3);color:var(--txt);border:1px solid var(--br)}
 .vf{position:relative;background:#000;border-radius:18px;overflow:hidden;
   min-height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:0}
 #camStream{width:100%;max-height:310px;object-fit:cover;display:none}
@@ -728,17 +726,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;
     </div>
   </div>
 
-  <!-- API-Kosten Mini-Card -->
-  <div id="apiCostCard" style="display:none;background:rgba(136,153,170,.05);border:1px solid rgba(136,153,170,.15);
-    border-radius:var(--r8);padding:9px 14px;margin-bottom:10px;
-    display:flex;align-items:center;justify-content:space-between">
-    <div>
-      <div style="font-size:10px;font-weight:300;color:var(--txt3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:2px">API-Verbrauch</div>
-      <div style="font-size:13px;font-weight:300" id="apiCostHome">–</div>
-    </div>
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--silv)" stroke-width="1.3"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-  </div>
-
   <!-- ── PROGRESSIONS-SCHUTZ ──
        WHY: Erscheint wenn Gewinn sich einer Steuerstufe nähert.
        Gibt konkreten Investitions-Tipp um Steuerlast zu senken. -->
@@ -817,382 +804,18 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;
   </div>
 </div>
 
-<!-- ── BELEGE (Business only) ── -->
+<!-- ── BELEGE ── -->
 <div class="view" id="v-belege">
   <div class="filter-row">
     <input class="inp" id="srch" type="text" placeholder="Suchen …" oninput="renderBelege()" style="flex:1;min-width:80px;font-size:12px;padding:8px 12px">
     <select class="sel" id="ftT" onchange="renderBelege()"><option value="">Alle</option><option value="er">Eingang</option><option value="ar">Ausgang</option></select>
     <select class="sel" id="ftC" onchange="renderBelege()"><option value="">Kategorie</option><option>Lebensmittel</option><option>Restaurant</option><option>Elektronik</option><option>Kleidung</option><option>Tanken</option><option>Haushalt</option><option>Gesundheit</option><option>Dienstleistung</option><option>Software</option><option>Sonstiges</option></select>
     <button class="btn btn-g btn-sm" onclick="exportCSV()">CSV</button>
-    <button onclick="openHelp('belege')" style="background:none;border:1px solid var(--br);border-radius:50%;width:18px;height:18px;font-size:10px;color:var(--txt3);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0">?</button>
   </div>
   <div id="bList"></div>
 </div>
 
-<!-- ── PRIVAT ── -->
-<div class="view" id="v-priv">
-  <!-- Kopfzeile: Gesamt + Buttons -->
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-    <div>
-      <div style="font-size:22px;font-weight:200;color:var(--silv)" id="privTotalDisp">0,00 €</div>
-      <div style="font-size:11px;font-weight:300;color:var(--txt3)" id="privCountDisp">0 Belege</div>
-    </div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <button onclick="openHelp('priv')" style="background:none;border:1px solid var(--br);border-radius:50%;width:18px;height:18px;font-size:10px;color:var(--txt3);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0">?</button>
-      <button class="btn btn-sm" onclick="openSchnell()"
-        style="background:rgba(136,153,170,.1);border:1px solid rgba(136,153,170,.25);color:var(--silv);font-size:12px;display:flex;align-items:center;gap:5px">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Schnell
-      </button>
-      <button class="btn btn-sm" onclick="analysePrivatMonat()"
-        style="background:rgba(136,153,170,.1);border:1px solid rgba(136,153,170,.25);color:var(--silv);font-size:12px;display:flex;align-items:center;gap:5px">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-        KI-Analyse
-      </button>
-    </div>
-  </div>
-
-  <!-- Optimierungspotential -->
-  <div id="privOptCard" style="display:none;background:rgba(136,153,170,.06);border:1px solid rgba(136,153,170,.18);
-    border-radius:var(--r12);padding:11px 14px;margin-bottom:12px;
-    display:flex;align-items:center;justify-content:space-between">
-    <div>
-      <div style="font-size:10px;font-weight:300;color:var(--txt3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:3px">Einsparpotential (geschätzt)</div>
-      <div style="font-size:18px;font-weight:200;color:var(--gold)" id="privOptBetrag">0,00 €</div>
-    </div>
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.2">
-      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
-    </svg>
-  </div>
-
-  <!-- Kreisdiagramm Kategorien -->
-  <div id="privChartWrap" style="display:none;background:var(--s2);border:1px solid var(--br);
-    border-radius:var(--r12);padding:14px;margin-bottom:12px">
-    <div style="font-size:10px;font-weight:300;color:var(--txt3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:10px">Ausgaben nach Kategorie</div>
-    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-      <svg id="privPieChart" width="110" height="110" viewBox="0 0 110 110"></svg>
-      <div id="privPieLegend" style="flex:1;min-width:120px;font-size:11px;font-weight:300;line-height:2"></div>
-    </div>
-  </div>
-
-  <!-- KI-Analyse Ergebnis -->
-  <div id="privAnalyseCard" style="display:none;background:rgba(136,153,170,.06);border:1px solid rgba(136,153,170,.15);
-    border-radius:var(--r12);padding:14px;margin-bottom:14px;font-size:13px;font-weight:300;
-    color:var(--txt2);line-height:1.7;white-space:pre-wrap"></div>
-  <div class="filter-row" style="margin-bottom:12px">
-    <select class="sel" id="pftC" onchange="renderPrivatBelege()"><option value="">Alle Kategorien</option><option>Lebensmittel</option><option>Restaurant</option><option>Elektronik</option><option>Kleidung</option><option>Tanken</option><option>Haushalt</option><option>Gesundheit</option><option>Freizeit</option><option>Reise</option><option>Sonstiges</option></select>
-    <select class="sel" id="pftM" onchange="renderPrivatBelege()">
-      <option value="">Alle Monate</option>
-      <option value="01">Januar</option><option value="02">Februar</option><option value="03">März</option>
-      <option value="04">April</option><option value="05">Mai</option><option value="06">Juni</option>
-      <option value="07">Juli</option><option value="08">August</option><option value="09">September</option>
-      <option value="10">Oktober</option><option value="11">November</option><option value="12">Dezember</option>
-    </select>
-  </div>
-  <div id="pList"></div>
-</div>
-
-<!-- ── KONTO-ABGLEICH ── -->
-<div class="view" id="v-konto">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-    <div>
-      <div style="display:flex;align-items:center;gap:8px"><div style="font-size:16px;font-weight:300;color:var(--txt)">Kontoauszug-Abgleich</div><button onclick="openHelp('konto')" style="background:none;border:1px solid var(--br);border-radius:50%;width:18px;height:18px;font-size:10px;color:var(--txt3);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0">?</button></div>
-      <div style="font-size:11px;font-weight:300;color:var(--txt3)" id="kontoStatusLbl">Noch keine Buchungen geladen</div>
-    </div>
-    <button class="btn btn-g btn-sm" onclick="kontoAllesLoeschen()" style="font-size:11px">Leeren</button>
-  </div>
-
-  <!-- Multi-Upload -->
-  <input type="file" id="kontoFileMulti" accept="image/*" multiple onchange="kontoQueueAdd(this)" style="display:none">
-  <input type="file" id="kontoFileKam" accept="image/*" capture="environment" onchange="kontoQueueAdd(this)" style="display:none">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-    <button onclick="document.getElementById('kontoFileKam').click()"
-      style="background:var(--s2);border:1.5px dashed var(--br2);border-radius:var(--r12);
-      padding:16px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--silv)" stroke-width="1.3"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-      <span style="font-size:12px;font-weight:300;color:var(--txt)">Foto aufnehmen</span>
-    </button>
-    <button onclick="document.getElementById('kontoFileMulti').click()"
-      style="background:var(--s2);border:1.5px dashed var(--br2);border-radius:var(--r12);
-      padding:16px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--silv)" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-      <span style="font-size:12px;font-weight:300;color:var(--txt)">Mehrere auswählen</span>
-      <span style="font-size:10px;color:var(--txt3)">Galerie · mehrere möglich</span>
-    </button>
-  </div>
-
-  <!-- Queue-Anzeige -->
-  <div id="kontoQueue" style="display:none;background:var(--s2);border:1px solid var(--br);border-radius:var(--r8);padding:10px 12px;margin-bottom:10px">
-    <div style="font-size:11px;font-weight:300;color:var(--txt3);margin-bottom:6px">📋 Warteschlange</div>
-    <div id="kontoQueueList" style="font-size:12px;font-weight:300;color:var(--txt2)"></div>
-    <button class="btn btn-gold btn-sm" onclick="kontoQueueStart()" style="margin-top:8px;width:100%;justify-content:center" id="kontoQueueBtn">
-      Alle analysieren starten
-    </button>
-  </div>
-
-  <!-- Progress -->
-  <div id="kontoProg" style="display:none;margin-bottom:10px">
-    <div style="font-size:11px;font-weight:300;color:var(--txt3);margin-bottom:6px;font-family:'DM Mono',monospace" id="kontoLog">Bereit …</div>
-    <div style="background:var(--s3);border-radius:4px;height:3px">
-      <div id="kontoFill" style="background:var(--silv);height:3px;border-radius:4px;width:0%;transition:width .3s"></div>
-    </div>
-  </div>
-
-  <!-- Erkannte Buchungen – persistent, akkumuliert -->
-  <div id="kontoResultWrap">
-    <div id="kontoUnknownSec" style="display:none;margin-bottom:16px">
-      <div style="font-size:11px;font-weight:300;color:var(--orn);margin-bottom:8px;letter-spacing:.3px;display:flex;justify-content:space-between">
-        <span>❓ KEIN BELEG GEFUNDEN</span>
-        <span id="kontoUnknownCount" style="color:var(--txt3)"></span>
-      </div>
-      <div id="kontoUnknownList"></div>
-    </div>
-    <div id="kontoMatchedSec" style="display:none;margin-bottom:16px">
-      <div style="font-size:11px;font-weight:300;color:var(--grn);margin-bottom:8px;letter-spacing:.3px">✅ ABGEGLICHEN</div>
-      <div id="kontoMatchedList"></div>
-    </div>
-    <!-- ══════════════════════════════════════════════════ -->
-  <!-- KILOMETERPAUSCHALE v2 – Routen-Tagebuch           -->
-  <!-- ══════════════════════════════════════════════════ -->
-  <div style="border-top:1px solid var(--br);margin:16px 0 12px"></div>
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-    <div style="font-size:15px;font-weight:300;color:var(--txt)">🚗 Kilometerpauschale</div>
-    <span style="font-size:10px;background:rgba(200,164,90,.15);color:var(--gold);padding:2px 7px;border-radius:10px">0,30 €/km</span>
-    <button onclick="openHelp('verpfl')" style="background:none;border:1px solid var(--br);border-radius:50%;width:18px;height:18px;font-size:10px;color:var(--txt3);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin-left:auto">?</button>
-  </div>
-  <div style="font-size:11px;font-weight:300;color:var(--txt3);margin-bottom:4px">
-    §9 Abs. 1 Nr. 4 EStG · Privates Auto · Berechnung immer ab Heimatort
-  </div>
-  <div style="font-size:11px;font-weight:300;color:var(--txt3);margin-bottom:12px">
-    Heimatort: <strong id="kmHeimatAnzeige" style="color:var(--txt)">– noch nicht gesetzt</strong>
-    <button onclick="document.getElementById('bsAdr').focus()" style="background:none;border:none;color:var(--gold);font-size:11px;cursor:pointer">(ändern)</button>
-  </div>
-
-  <!-- ══ PRIMÄR: AKTIVE FAHRT / ICH BIN HIER ══ -->
-
-  <!-- Wenn KEINE aktive Tages-Route läuft: Sofort-Button -->
-  <div id="kmSofortCard" style="margin-bottom:12px">
-    <div class="card card-sm">
-      <div style="font-size:12px;font-weight:300;color:var(--txt2);margin-bottom:10px">
-        Du bist gerade irgendwo angekommen? Drück einfach:
-      </div>
-      <button class="btn btn-gold" onclick="kmIchBinHierSofort()" style="width:100%;justify-content:center;gap:8px;font-size:14px">
-        <span style="font-size:18px">📍</span><span>Ich bin hier angekommen</span>
-      </button>
-      <div style="font-size:10px;font-weight:300;color:var(--txt3);margin-top:8px;text-align:center">
-        GPS ermittelt deinen Standort · Berechnung ab Heimatort · du kannst danach alles korrigieren
-      </div>
-    </div>
-  </div>
-
-  <!-- Wenn aktive Tages-Route läuft -->
-  <div id="kmAktivCard" style="display:none;background:rgba(200,164,90,.07);border:1px solid rgba(200,164,90,.3);border-radius:var(--r12);padding:12px 14px;margin-bottom:12px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <div style="font-size:12px;font-weight:400;color:var(--gold)">🟢 Tages-Route läuft</div>
-      <div style="font-size:10px;font-weight:300;color:var(--txt3)" id="kmAktivDatum"></div>
-    </div>
-    <div id="kmAktivStops" style="margin-bottom:10px"></div>
-    <button class="btn btn-gold" onclick="kmIchBinHier()" style="width:100%;justify-content:center;gap:6px">
-      <span style="font-size:16px">📍</span><span>Ich bin hier angekommen</span>
-    </button>
-    <button class="btn btn-g btn-sm" onclick="kmRouteAbschliessen()" style="width:100%;justify-content:center;margin-top:8px">
-      🏠 Route beenden &amp; speichern
-    </button>
-  </div>
-
-  <!-- ══ SEKUNDÄR: Tages-Route + Manuelle Eingabe ══ -->
-  <details style="margin-bottom:10px">
-    <summary style="font-size:11px;font-weight:300;color:var(--txt3);cursor:pointer;padding:6px 0;user-select:none">
-      📅 Tages-Route planen (mehrere Stops an einem Tag)
-    </summary>
-    <div class="card card-sm" style="margin-top:8px">
-      <div style="font-size:11px;font-weight:300;color:var(--txt3);margin-bottom:8px">
-        Route starten → bei jedem Ziel "Ich bin hier" drücken → Route beenden → alles wird als Belege gespeichert
-      </div>
-      <div class="field" style="margin-bottom:8px">
-        <label>Anlass dieser Route</label>
-        <input id="kmRouteName" class="inp" type="text" placeholder="z.B. Kundentermine 12.03.2026" style="font-size:12px">
-      </div>
-      <div class="field" style="margin-bottom:10px">
-        <label>Datum</label>
-        <input id="kmRouteDatum" class="inp" type="date" style="font-size:12px">
-      </div>
-      <button class="btn btn-g btn-sm" onclick="kmRouteStarten()" style="width:100%;justify-content:center">
-        🚗 Tages-Route starten
-      </button>
-    </div>
-  </details>
-
-  <details style="margin-bottom:14px">
-    <summary style="font-size:11px;font-weight:300;color:var(--txt3);cursor:pointer;padding:6px 0;user-select:none">
-      ✏️ Manuelle Eingabe (Einzelfahrt ohne Tracking)
-    </summary>
-    <div class="card card-sm" style="margin-top:8px">
-      <div class="g2" style="gap:8px;margin-bottom:8px">
-        <div class="field"><label>Von</label>
-          <input id="kmManVon" class="inp" type="text" placeholder="Startadresse" style="font-size:12px">
-        </div>
-        <div class="field"><label>Nach</label>
-          <input id="kmManNach" class="inp" type="text" placeholder="Zieladresse" style="font-size:12px">
-        </div>
-      </div>
-      <div class="g2" style="gap:8px;margin-bottom:8px">
-        <div class="field"><label>Datum</label>
-          <input id="kmManDatum" class="inp" type="date" style="font-size:12px">
-        </div>
-        <div class="field"><label>km (manuell)</label>
-          <input id="kmManKm" class="inp" type="number" min="0" step="0.1" placeholder="z.B. 23.5" style="font-size:12px">
-        </div>
-      </div>
-      <div class="field" style="margin-bottom:10px"><label>Anlass</label>
-        <input id="kmManAnlass" class="inp" type="text" placeholder="z.B. Kundentermin" style="font-size:12px">
-      </div>
-      <button class="btn btn-g btn-sm" onclick="kmManSpeichern()" style="width:100%;justify-content:center">
-        Einzelfahrt speichern
-      </button>
-    </div>
-  </details>
-
-  <!-- ── MONATSÜBERSICHT ── -->
-  <div id="kmMonatWrap" style="display:none">
-    <div style="font-size:11px;font-weight:300;color:var(--txt3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px">
-      Fahrten diesen Monat
-    </div>
-    <div id="kmMonatList"></div>
-    <div id="kmMonatSumme" style="background:var(--s2);border-radius:var(--r8);padding:10px 12px;margin-top:8px;font-size:13px;font-weight:300;color:var(--txt2)"></div>
-  </div>
-
-<!-- ── SCHNELLEINGABE SHEET (Privat, kein Foto) ── -->
-<div class="ovl" id="schnellOvl" onclick="closeSchnellOuter(event)">
-  <div class="sheet">
-    <div class="sh"></div>
-    <button class="sc-btn" onclick="closeSchnell()">✕</button>
-    <div style="font-size:15px;font-weight:300;color:var(--txt);margin-bottom:4px">⚡ Schnelleingabe</div>
-    <div style="font-size:11px;font-weight:300;color:var(--txt3);margin-bottom:16px">Ohne Foto – tippen oder sprechen</div>
-
-    <!-- Spracheingabe -->
-    <div id="sprachWrap" style="margin-bottom:14px">
-      <button id="micBtn" onclick="toggleMic()"
-        style="width:100%;background:var(--s2);border:1px solid var(--br);border-radius:var(--r12);
-        padding:14px;display:flex;align-items:center;justify-content:center;gap:10px;
-        cursor:pointer;color:var(--txt2);font-size:13px;font-weight:300;transition:all .2s">
-        <svg id="micIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
-        </svg>
-        <span id="micLbl">🎤 Sprechen</span>
-      </button>
-      <div id="micTranscript" style="display:none;background:var(--s2);border:1px solid var(--br2);
-        border-radius:var(--r8);padding:10px 12px;font-size:12px;font-weight:300;
-        color:var(--txt2);margin-top:8px;min-height:36px;line-height:1.5"></div>
-    </div>
-
-    <div style="font-size:11px;font-weight:300;color:var(--txt3);text-align:center;margin-bottom:12px">— oder manuell —</div>
-
-    <!-- Manuelle Felder -->
-    <div class="res-fields">
-      <div class="field"><label>Händler / Beschreibung</label><input id="sShop" type="text" placeholder="z.B. Eiswagen am See"></div>
-      <div class="field"><label>Betrag</label><input id="sBrutto" type="text" placeholder="0.00" inputmode="decimal"></div>
-      <div class="field"><label>Datum</label><input id="sDate" type="date"></div>
-      <div class="field"><label>Kategorie</label><select id="sCat">
-        <option>Lebensmittel</option><option>Restaurant</option><option>Elektronik</option>
-        <option>Kleidung</option><option>Tanken</option><option>Haushalt</option>
-        <option>Gesundheit</option><option>Freizeit</option><option>Reise</option>
-        <option>Sonstiges</option></select></div>
-      <div class="field"><label>Zahlung</label><select id="sPay">
-        <option>Bar</option><option>Karte</option><option>Online</option></select></div>
-    </div>
-
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button class="btn btn-gold btn-sm" style="flex:1;justify-content:center" onclick="saveSchnell()">Speichern</button>
-      <button class="btn btn-g btn-sm" onclick="closeSchnell()">Abbrechen</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── VERPFLEGUNGSPAUSCHALE / FAHRTKOSTEN ── -->
-<div class="view" id="v-verpfl">
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><div style="font-size:16px;font-weight:300;color:var(--txt)">Verpflegungspauschale</div><button onclick="openHelp('verpfl')" style="background:none;border:1px solid var(--br);border-radius:50%;width:18px;height:18px;font-size:10px;color:var(--txt3);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0">?</button></div>
-  <div style="font-size:11px;font-weight:300;color:var(--txt3);margin-bottom:14px">§ 4 Abs. 5 EStG · Inland 8 € / 14 € / 28 €</div>
-
-  <!-- Betriebsstätte -->
-  <div class="card card-sm" style="margin-bottom:10px">
-    <div class="stitle">Betriebsstätte (Heimatort)</div>
-    <div style="display:flex;gap:8px">
-      <input class="inp" id="bsAdresse" type="text" placeholder="z.B. Musterstraße 1, 80331 München" style="flex:1;font-size:12px">
-      <button class="btn btn-g btn-sm" onclick="saveBetriebsstaette()">OK</button>
-    </div>
-    <p id="bsHint" style="font-size:10px;font-weight:300;color:var(--txt3);margin-top:6px;line-height:1.5">Einmal hinterlegen – wird für Abstandsberechnung gespeichert.</p>
-  </div>
-
-  <!-- Aktueller Besuch -->
-  <div class="card card-sm" style="margin-bottom:10px">
-    <div class="stitle">Kundenbesuch erfassen</div>
-
-    <div id="verpflActiveCard" style="display:none;background:rgba(74,128,192,.07);border:1px solid rgba(74,128,192,.2);
-      border-radius:var(--r8);padding:10px 12px;margin-bottom:10px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-        <div style="font-size:11px;font-weight:300;color:var(--blu)">⏱️ Besuch läuft …</div>
-        <div style="font-size:18px;font-weight:200;color:var(--gold);font-variant-numeric:tabular-nums" id="verpflTimer">00:00:00</div>
-      </div>
-      <div style="font-size:11px;font-weight:300;color:var(--txt2)" id="verpflActiveInfo">–</div>
-      <div style="font-size:10px;font-weight:300;color:var(--txt3);margin-top:3px" id="verpflStartInfo">–</div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-      <button id="btnAnkunft" class="btn btn-g" onclick="verpflAnkunft()" style="font-size:12px;justify-content:center;flex-direction:column;gap:2px;padding:12px 8px">
-        <span style="font-size:18px">📍</span>
-        <span>Ich bin hier</span>
-        <span style="font-size:10px;color:var(--txt3)">Standort erfassen</span>
-      </button>
-      <button id="btnAbfahrt" class="btn btn-g" onclick="verpflAbfahrt()" style="font-size:12px;justify-content:center;flex-direction:column;gap:2px;padding:12px 8px" disabled>
-        <span style="font-size:18px">🏁</span>
-        <span>Fertig / Abfahrt</span>
-        <span style="font-size:10px;color:var(--txt3)">Besuch abschließen</span>
-      </button>
-    </div>
-
-    <div id="verpflStandortInfo" style="display:none;background:var(--s2);border:1px solid var(--br);
-      border-radius:var(--r8);padding:10px 12px;font-size:12px;font-weight:300;
-      color:var(--txt2);line-height:1.6;margin-bottom:10px" id="verpflGeoInfo"></div>
-  </div>
-
-  <!-- Tagesübersicht -->
-  <div class="card card-sm" style="margin-bottom:10px">
-    <div class="stitle">Heutige Pauschale</div>
-    <div id="verpflTagesCard">
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
-        <div style="background:var(--s2);border-radius:var(--r8);padding:10px">
-          <div style="font-size:20px;font-weight:200;color:var(--txt)" id="verpflStunden">0h</div>
-          <div style="font-size:10px;font-weight:300;color:var(--txt3)">Abwesend</div>
-        </div>
-        <div style="background:var(--s2);border-radius:var(--r8);padding:10px">
-          <div style="font-size:20px;font-weight:200;color:var(--gold)" id="verpflPauschale">0 €</div>
-          <div style="font-size:10px;font-weight:300;color:var(--txt3)">Pauschale</div>
-        </div>
-        <div style="background:var(--s2);border-radius:var(--r8);padding:10px">
-          <div style="font-size:20px;font-weight:200;color:var(--txt)" id="verpflKm">– km</div>
-          <div style="font-size:10px;font-weight:300;color:var(--txt3)">Entfernung</div>
-        </div>
-      </div>
-      <div style="font-size:10px;font-weight:300;color:var(--txt3);margin-top:8px;line-height:1.5">
-        Staffel: ab 8h = 8 € · ab 14h = 14 € · 24h (Übernachtung) = 28 €
-      </div>
-    </div>
-  </div>
-
-  <!-- Monatsübersicht gespeicherte Fahrten -->
-  <div class="card card-sm">
-    <div class="stitle" style="display:flex;align-items:center;justify-content:space-between">
-      <span>Fahrten dieses Monats</span>
-      <span id="verpflMonatsSumme" style="color:var(--gold);font-size:12px">0 €</span>
-    </div>
-    <div id="verpflFahrtenList"><div class="empty" style="padding:16px 0"><p>Noch keine Fahrten erfasst.</p></div></div>
-  </div>
-</div>
-
 <!-- ── MwSt ── -->
-
 <div class="view" id="v-mwst">
   <div class="tabs">
     <button class="tab on" onclick="setPeriod('month',this)">Monat</button>
@@ -1212,7 +835,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;
   <div class="cc"><div class="cc-title">Monatsverlauf</div><div class="mchart" id="mChart"></div><div class="chart-leg"><span><i class="dot" style="background:rgba(192,144,64,.5)"></i>Umsatz AR</span><span><i class="dot" style="background:rgba(74,128,192,.4)"></i>Ausgaben ER</span></div></div>
   <div class="cc"><div class="cc-title">MwSt nach Monat</div><table class="mtbl"><thead><tr><th>Monat</th><th>AR-MwSt</th><th>Vorsteuer</th><th>Saldo</th></tr></thead><tbody id="mTbl"></tbody></table></div>
   <div class="cc"><div class="cc-title">Top Kategorien (Ausgaben)</div><div class="barchart" id="catChart"></div></div>
-  <div id="mRcCard" style="display:none;background:rgba(200,164,90,.06);border:1px solid rgba(200,164,90,.2);border-radius:var(--r12);padding:12px 14px;margin:10px 0"></div>
   <!-- Inflations-Tracker -->
   <div class="cc" id="inflCC" style="display:none"><div class="cc-title">📈 Inflations-Tracker</div><div id="inflList"></div></div>
   <div style="display:flex;gap:7px;flex-wrap:wrap;padding-bottom:4px">
@@ -1223,7 +845,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;
 
 <!-- ── STEUER ── -->
 <div class="view" id="v-steuer">
-  <div style="display:flex;justify-content:flex-end;margin-bottom:6px"><button onclick="openHelp('steuer')" style="background:none;border:1px solid var(--br);border-radius:50%;width:18px;height:18px;font-size:10px;color:var(--txt3);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0">?</button></div>
   <div class="est-hero">
     <div class="lbl">Geschätzte Einkommensteuer (Jahr)</div>
     <div class="big" id="estJahr">0 €</div>
@@ -1283,19 +904,12 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;
   <div style="display:flex;gap:7px;flex-wrap:wrap">
     <button class="btn btn-gold btn-sm" onclick="exportQCSV()">CSV exportieren</button>
     <button class="btn btn-g btn-sm" onclick="exportQZip()">PDF-Paket (ZIP)</button>
-    <button class="btn btn-gold" id="stbExportBtn" onclick="exportSteuerberater()" style="gap:6px"><span>📊</span><span>Steuerberater-Export</span></button>
   </div>
 </div>
 
 <!-- ── SETTINGS ── -->
 <div class="view" id="v-settings">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-    <button class="btn btn-g btn-sm" onclick="showView('steuer')">← Zurück</button>
-    <div style="display:flex;gap:6px;align-items:center">
-      <button onclick="openChangelog()" style="background:none;border:1px solid var(--br);border-radius:var(--r8);padding:3px 8px;font-size:10px;font-weight:300;color:var(--txt3);cursor:pointer">📋 v2.0</button>
-      <button onclick="openHelp('settings')" style="background:none;border:1px solid var(--br);border-radius:50%;width:18px;height:18px;font-size:10px;color:var(--txt3);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0">?</button>
-    </div>
-  </div>
+  <button class="btn btn-g btn-sm" onclick="showView('steuer')" style="margin-bottom:12px">← Zurück</button>
   <div class="pwa-card">
     <div class="l">📱 Als App installieren</div>
     <p>iOS: <strong style="color:var(--txt)">Teilen → Zum Homescreen</strong><br>Android: <strong style="color:var(--txt)">Menü → App installieren</strong></p>
@@ -1308,42 +922,19 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;
     <div class="info-row"><span class="k">Belegnummer-Format</span><span class="val" id="settFmt">–</span></div>
     <button class="btn btn-g btn-sm" onclick="resetOnboarding()" style="margin-top:10px">Neu einrichten</button>
   </div>
-
-  <div style="background:var(--s2);border:1px dashed var(--br);border-radius:var(--r12);padding:14px;margin-top:10px;opacity:.7">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
-      <span>🏦</span><div style="font-size:13px;font-weight:300;color:var(--txt)">Bank-Synchronisation</div>
-      <span style="font-size:9px;background:var(--br);color:var(--txt3);padding:2px 6px;border-radius:10px">BALD</span>
-    </div>
-    <div style="font-size:11px;font-weight:300;color:var(--txt3)">FinTS/HBCI oder PSD2 – Buchungen automatisch importieren.</div>
-  </div>
-
-  <div style="background:var(--s2);border:1px dashed var(--br);border-radius:var(--r12);padding:14px;margin-top:10px;opacity:.7">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
-      <span>📄</span><div style="font-size:13px;font-weight:300;color:var(--txt)">Ausgangsrechnungen erstellen</div>
-      <span style="font-size:9px;background:var(--br);color:var(--txt3);padding:2px 6px;border-radius:10px">BALD</span>
-    </div>
-    <div style="font-size:11px;font-weight:300;color:var(--txt3)">Eigene Rechnungen mit Stempel und Bankdaten als PDF.</div>
-  </div>
   <div class="card card-sm" style="margin-bottom:9px">
     <div class="stitle">KI-Verbindung</div>
-    <div style="margin-bottom:8px">
-      <div style="font-size:11px;font-weight:300;color:var(--txt3);margin-bottom:6px" id="apiStat">–</div>
-      <div style="display:flex;gap:7px">
-        <input class="inp" type="password" id="apiKey" placeholder="sk-ant-… Claude API Key" style="font-size:12px;flex:1">
-        <button class="btn btn-gold btn-sm" onclick="saveApiKey()">Speichern</button>
-      </div>
-      <p style="font-size:10px;font-weight:300;color:var(--txt3);margin-top:6px;line-height:1.5">Key wird nur lokal gespeichert. Du kannst ihn jederzeit überschreiben oder löschen.</p>
-    </div>
-    <button class="btn btn-red btn-sm" onclick="clearApiKeySettings()" style="margin-bottom:4px">Key löschen</button>
+    <div style="display:flex;gap:7px"><input class="inp" type="password" id="apiKey" placeholder="sk-ant-… Claude API Key" style="font-size:12px"><button class="btn btn-g btn-sm" onclick="saveApiKey()">OK</button></div>
+    <p style="font-size:10px;font-weight:300;color:var(--txt3);margin-top:7px;line-height:1.6" id="apiStat">–</p>
     <a href="https://console.anthropic.com" target="_blank" style="font-size:11px;color:var(--gold);text-decoration:none;display:inline-block;margin-top:6px">→ API Key erstellen</a>
-    <div style="margin-top:10px;background:var(--s2);border:1px solid var(--br);border-radius:var(--r8);padding:9px 12px">
-      <div style="font-size:10px;font-weight:300;color:var(--txt3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px">API-Verbrauch (geschätzt)</div>
-      <div style="font-size:12px;font-weight:300" id="apiCostDisp">–</div>
-      <button class="btn btn-g btn-sm" onclick="resetApiCost()" style="margin-top:6px;font-size:10px">Zurücksetzen</button>
-    </div>
   </div>
   <div class="card card-sm" style="margin-bottom:9px">
     <div class="stitle">Stempel</div>
+    <div class="stpl-grid">
+      <div class="stpl on" id="tpl0" onclick="pickTpl(0)">Klassisch</div>
+      <div class="stpl" id="tpl1" onclick="pickTpl(1)">Modern</div>
+      <div class="stpl" id="tpl2" onclick="pickTpl(2)">Minimal</div>
+    </div>
     <div class="stamp-prev"><canvas id="stmpC" width="290" height="110"></canvas></div>
     <div class="g2" style="gap:8px;margin-bottom:10px">
       <div class="field"><label>Firma</label><input id="sFirma" type="text" placeholder="Meine Firma GbR" oninput="refreshStamp()"></div>
@@ -1391,7 +982,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;
   <button class="ni on" onclick="showView('home')" data-v="home">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Start
   </button>
-  <button class="ni" onclick="showView('belege')" data-v="belege" id="navBelege">
+  <button class="ni" onclick="showView('belege')" data-v="belege">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Belege
   </button>
   <div class="ni-sw">
@@ -1399,20 +990,11 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
     </button>
   </div>
-  <button class="ni" id="navPriv" onclick="showView('priv')" data-v="priv" style="display:none">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Privat
-  </button>
-  <button class="ni" onclick="showView('mwst')" data-v="mwst" id="navMwst">
+  <button class="ni" onclick="showView('mwst')" data-v="mwst">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>MwSt
   </button>
-  <button class="ni" onclick="showView('steuer')" data-v="steuer" id="navSteuer">
+  <button class="ni" onclick="showView('steuer')" data-v="steuer">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Steuer
-  </button>
-  <button class="ni" onclick="showView('konto')" data-v="konto" id="navKonto">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>Konto
-  </button>
-  <button class="ni" onclick="showView('verpfl')" data-v="verpfl" id="navVerpfl" style="display:none">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Fahrt
   </button>
 </nav>
 
@@ -1506,14 +1088,9 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;
   <div class="sheet" style="max-height:95vh">
     <div class="sh"></div>
     <button class="sc-btn" onclick="closeScanner()">✕</button>
-    <!-- WHY: Kein Privat-Tab hier – der Modus kommt vom Toggle auf der Startseite -->
-    <div id="bizSeg" class="seg" style="grid-template-columns:1fr 1fr">
-      <button class="seg-btn on" id="ttER" onclick="setScanType('er')">📥 Eingangsrechnung</button>
-      <button class="seg-btn" id="ttAR" onclick="setScanType('ar')">📤 Ausgangsrechnung</button>
-    </div>
-    <!-- Privat-Modus Banner: zeigt aktuellen Modus, kein manuelles Umschalten -->
-    <div id="privScanHint" style="display:none;background:rgba(136,153,170,.07);border:1px solid rgba(136,153,170,.18);border-radius:10px;padding:9px 12px;font-size:11px;font-weight:300;color:var(--silv);line-height:1.55;margin-bottom:4px">
-      🏠 Privat-Modus aktiv · Keine Belegnummer · Nur Gesamtbetrag · Erscheint nur im Privat-Tab
+    <div class="seg">
+      <button class="seg-btn on" id="ttER" onclick="setScanType('er')">Eingangsrechnung</button>
+      <button class="seg-btn" id="ttAR" onclick="setScanType('ar')">Ausgangsrechnung</button>
     </div>
 
     <!-- Vorschau: wird sichtbar sobald ein Bild gewählt wurde -->
@@ -1581,8 +1158,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;
       <div id="scanModeBanner" style="margin-bottom:12px;padding:9px 12px;border-radius:8px;
         font-size:11px;font-weight:300;line-height:1.5;display:none"></div>
       <p style="font-size:13px;font-weight:300;color:var(--txt2);margin-bottom:13px">Daten prüfen und ggf. korrigieren:</p>
-      <!-- Business-Felder (er/ar) -->
-      <div class="res-fields" id="bizFields">
+      <div class="res-fields">
         <div class="field"><label>Händler / Aussteller</label><input id="rShop" type="text" placeholder="–"></div>
         <div class="field"><label>Datum</label><input id="rDate" type="date"></div>
         <div class="field"><label>Netto</label><input id="rNet" type="text" placeholder="0.00"></div>
@@ -1592,25 +1168,12 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;
         <div class="field"><label>Kategorie</label><select id="rCat"><option>Lebensmittel</option><option>Restaurant</option><option>Elektronik</option><option>Kleidung</option><option>Tanken</option><option>Haushalt</option><option>Gesundheit</option><option>Dienstleistung</option><option>Software</option><option>Sonstiges</option></select></div>
         <div class="field"><label>Zahlung</label><select id="rPay"><option>Karte</option><option>Bar</option><option>Überweisung</option><option>Online</option></select></div>
       </div>
-      <!-- Privat-Felder (priv) – nur Gesamtbetrag + Kategorie, keine MwSt -->
-      <div class="res-fields" id="privFields" style="display:none">
-        <div class="field"><label>Händler / Geschäft</label><input id="pShop" type="text" placeholder="–"></div>
-        <div class="field"><label>Datum</label><input id="pDate" type="date"></div>
-        <div class="field"><label>Gesamtbetrag</label><input id="pBrutto" type="text" placeholder="0.00"></div>
-        <div class="field"><label>Kategorie</label><select id="pCat">
-          <option>Lebensmittel</option><option>Restaurant</option><option>Elektronik</option>
-          <option>Kleidung</option><option>Tanken</option><option>Haushalt</option>
-          <option>Gesundheit</option><option>Freizeit</option><option>Reise</option>
-          <option>Sonstiges</option></select></div>
-        <div class="field"><label>Zahlung</label><select id="pPay"><option>Karte</option><option>Bar</option><option>Online</option></select></div>
-      </div>
       <div id="itemsSec" style="display:none;margin-bottom:12px">
         <p class="stitle" style="margin-bottom:8px">Erkannte Positionen</p>
         <table class="itbl"><thead><tr><th>Artikel</th><th style="text-align:right">Preis</th></tr></thead><tbody id="itemsB"></tbody></table>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-gold btn-sm" onclick="saveBeleg()">Speichern</button>
-        <button id="voiceCommentBtn" class="btn btn-g btn-sm" onclick="startVoiceComment(getFormKontext(), onVoiceCommentResult)" style="gap:5px">🎙️ Erklärung</button>
         <button class="btn btn-g btn-sm" onclick="resetScan()">Neu scannen</button>
         <button class="btn btn-g btn-sm" id="retryKiBtn" style="display:none"
           onclick="retryKi()">⚡ KI erneut starten</button>
@@ -1717,20 +1280,8 @@ function setMode(m){
   document.getElementById('modePriv').className='mode-btn'+(m==='priv'?' on priv':'');
   document.getElementById('bizContent').style.display=m==='biz'?'block':'none';
   document.getElementById('privContent').style.display=m==='priv'?'block':'none';
+  // Ring-Farbe wechseln: Gold = Business, Silber = Privat
   document.getElementById('ringF').style.stroke=m==='biz'?'var(--gold)':'var(--silv)';
-  // WHY: Im Privat-Modus MwSt+Steuer-Tab ausblenden, Privat-Tab einblenden
-  // Konto-Tab ist immer sichtbar (zeigt alle Buchungen, egal ob priv/biz)
-  const isBiz=m==='biz';
-  document.getElementById('navBelege').style.display=isBiz?'':'none';
-  document.getElementById('navMwst').style.display=isBiz?'':'none';
-  document.getElementById('navSteuer').style.display=isBiz?'':'none';
-  document.getElementById('navPriv').style.display=isBiz?'none':'';
-  // Konto + Fahrt nur im Business-Modus sichtbar
-  const navV=document.getElementById('navVerpfl');
-  if(navV) navV.style.display=isBiz?'':'none';
-  // Scanner-Default je nach Modus
-  if(m==='priv') setScanType('priv');
-  else setScanType('er');
   renderHome();
 }
 
@@ -1752,41 +1303,26 @@ function obFinish(){
   initApp();
 }
 function resetOnboarding(){if(!confirm('Neu einrichten?'))return;localStorage.removeItem('p_done');profile.done=false;document.getElementById('onboarding').classList.add('on');}
-function checkOnboarding(){initApp();if(!profile.done){document.getElementById('onboarding').classList.add('on');}}
+function checkOnboarding(){if(!profile.done){document.getElementById('onboarding').classList.add('on');}else{initApp();}}
 
 // ════════════════════════════════════════════════════════
 // ██ MODUL: NAV
 // ════════════════════════════════════════════════════════
 function showView(v){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('on'));
-  const vEl=document.getElementById('v-'+v);
-  if(!vEl)return;
-  vEl.classList.add('on');
+  document.getElementById('v-'+v).classList.add('on');
   document.querySelectorAll('.ni[data-v]').forEach(el=>el.classList.toggle('on',el.dataset.v===v));
   if(v==='home')renderHome();
   if(v==='belege')renderBelege();
-  if(v==='priv')renderPrivatBelege();
-  if(v==='konto')initKontoView();
-  if(v==='verpfl'){initVerpflView();initKmView();}
   if(v==='mwst')renderMwst();
   if(v==='steuer')calcSteuer();
   if(v==='quartal')initQuartal();
   if(v==='settings'){loadStampUI();updCounters();updSettingsInfo();}
 }
-function resetApiCost(){
-  if(!confirm('API-Verbrauch zurücksetzen?')) return;
-  localStorage.removeItem('bsp_api_costs');
-  updApiCostDisplay();
-  toast('Verbrauch zurückgesetzt','ok');
-}
 function updSettingsInfo(){
   const c=cfg();
   document.getElementById('settLand').textContent=c.flag+' '+c.name;
   document.getElementById('settTyp').textContent=profile.typ==='ku'?'Kleinunternehmer §19':profile.typ==='gew'?'Gewerbetreibender':'Freiberufler';
-  // WHY: Key immer ins Feld laden damit Nutzer ihn sehen/ändern kann
-  const keyInp=document.getElementById('apiKey');
-  if(keyInp) keyInp.value=localStorage.getItem('cak')||'';
-  updApiCostDisplay();
   const fmtEx={A:'ER-2026-0001',B:'2026-Q1-ER-0001',C:'2026-ER-0001'};
   document.getElementById('settFmt').textContent=fmtEx[profile.fmt]||'–';
   if(apiKey)document.getElementById('apiKey').value=apiKey;
@@ -2129,7 +1665,6 @@ function calcBongLive() {
 // ██ MODUL: HOME RENDER
 // ════════════════════════════════════════════════════════
 async function renderHome(){
-  updApiCostDisplay(); // WHY: Home immer aktuell
   renderTacho(); // WHY: Synchron – sofort sichtbar, kein DB-Wait nötig
   // WHY: try/catch damit ein Fehler hier nicht die ganze Home-View blockiert
   try { await renderProgressionsSchutz(); } catch(e) { console.warn('ProgSchutz:', e); }
@@ -2160,47 +1695,21 @@ async function renderHome(){
   await renderGarantieWaechter(all);
   await renderAboDetektiv(all);
 
-  // Recent list – WHY: Je nach Modus nur passende Belege zeigen
-  const sortedAll=[...all].sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
-  const sorted=appMode==='priv'
-    ? sortedAll.filter(b=>b.type==='priv').slice(0,6)
-    : sortedAll.filter(b=>b.type!=='priv').slice(0,6);
-
-  // WHY: Im Privat-Modus Gesamtübersicht auf Home
-  {
-    let phEl=document.getElementById('privHomeTotal');
-    if(appMode==='priv'){
-      const privAll=all.filter(b=>b.type==='priv');
-      const privTotal=privAll.reduce((s,b)=>s+(b.brutto||0),0);
-      const mo=String(new Date().getMonth()+1).padStart(2,'0');
-      const thisMonth=privAll.filter(b=>(b.date||'').substring(5,7)===mo);
-      const monthTotal=thisMonth.reduce((s,b)=>s+(b.brutto||0),0);
-      const rlp2=document.getElementById('recentList');
-      if(!phEl&&rlp2){phEl=document.createElement('div');phEl.id='privHomeTotal';phEl.style.cssText='background:rgba(136,153,170,.06);border:1px solid rgba(136,153,170,.18);border-radius:var(--r12);padding:14px 16px;margin-bottom:14px';rlp2.parentNode.insertBefore(phEl,rlp2);}
-      if(phEl){phEl.style.display='block';phEl.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-end"><div><div style="font-size:10px;font-weight:300;color:var(--txt3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px">Gesamt Privatausgaben</div><div style="font-size:28px;font-weight:200;color:var(--silv)">'+fm(privTotal)+' €</div><div style="font-size:11px;font-weight:300;color:var(--txt3);margin-top:2px">'+privAll.length+' Belege</div></div><div style="text-align:right"><div style="font-size:10px;font-weight:300;color:var(--txt3);margin-bottom:4px">Dieser Monat</div><div style="font-size:18px;font-weight:200;color:var(--silv)">'+fm(monthTotal)+' €</div><div style="font-size:11px;font-weight:300;color:var(--txt3);margin-top:2px">'+thisMonth.length+' Belege</div></div></div>';}
-    } else if(phEl){phEl.style.display='none';}
-  }
-
+  // Recent list
+  const sorted=[...all].sort((a,b)=>(b.savedAt||0)-(a.savedAt||0)).slice(0,6);
   const rl=document.getElementById('recentList');
   if(!sorted.length){rl.innerHTML='<div class="empty"><p>Noch keine Belege.<br>Tippe auf den Scanner-Button.</p></div>';return;}
-  rl.innerHTML=sorted.map(b=>{
-    const isPriv=b.type==='priv';
-    const barCol=isPriv?'var(--silv)':b.type==='er'?'var(--blu)':'var(--ylw)';
-    const amCol=isPriv?'var(--silv)':b.type==='er'?'var(--blu)':'var(--ylw)';
-    const badge=isPriv?'<span class="badge" style="background:rgba(136,153,170,.15);color:var(--silv)">🏠</span>'
-      :`<span class="badge ${b.type==='er'?'b-er':'b-ar'}">${b.type.toUpperCase()}</span>`;
-    const nrSpan=isPriv?'':`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--txt3)">${eh(b.belegNr||'')}</span>`;
-    return `<div class="ri" onclick="showDetail(${b.id})">
-    <div class="ri-bar" style="background:${barCol}"></div>
+  rl.innerHTML=sorted.map(b=>`<div class="ri" onclick="showDetail(${b.id})">
+    <div class="ri-bar" style="background:${b.type==='er'?'var(--blu)':'var(--ylw)'}"></div>
     <div class="ri-th">${b.image?`<img src="${b.image}" alt="">`:'🧾'}</div>
     <div class="ri-inf">
       <div class="ri-sh">${eh(b.shop||'Unbekannt')}</div>
-      <div class="ri-me">${badge}${nrSpan}${b.garantieBis?`<span style="font-size:10px;color:${new Date(b.garantieBis)<new Date()?'var(--red)':'var(--grn)'}">🛡️ ${fd(b.garantieBis)}</span>`:''}${b.istAbo?'<span class="badge b-priv">Abo</span>':''}</div>
+      <div class="ri-me"><span class="badge ${b.type==='er'?'b-er':'b-ar'}">${b.type.toUpperCase()}</span><span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--txt3)">${eh(b.belegNr||'')}</span>${b.garantieBis?`<span style="font-size:10px;color:${new Date(b.garantieBis)<new Date()?'var(--red)':'var(--grn)'}">🛡️ ${fd(b.garantieBis)}</span>`:''}${b.istAbo?'<span class="badge b-priv">Abo</span>':''}</div>
     </div>
     <div class="ri-r">
-      <div class="ri-am" style="color:${amCol}">${b.brutto!=null?fm(b.brutto)+' '+cfg().currency:'–'}</div>
+      <div class="ri-am" style="color:${b.type==='er'?'var(--blu)':'var(--ylw)'}">${b.brutto!=null?fm(b.brutto)+' '+cfg().currency:'–'}</div>
       <div class="ri-dt">${fd(b.date)}</div>
-    </div></div>`;}).join('');
+    </div></div>`).join('');
 }
 
 // ════════════════════════════════════════════════════════
@@ -2251,21 +1760,13 @@ async function renderGarantieWaechter(all){
 // aus den bereits vorhandenen shop/brutto/date Feldern –
 // ohne dass der Nutzer etwas markieren muss.
 // ════════════════════════════════════════════════════════
-const // WHY: NUR eindeutig digitale Streaming/SaaS-Abos – keine Telko, Baumärkte,
-// Tankstellen oder andere Regelmäßigkeiten die keine Abos sind.
-ABO_KEYWORDS=/^(netflix|spotify|amazon prime|prime video|disney\+|dazn|youtube premium|apple music|apple one|icloud\+|dropbox|adobe|microsoft 365|office 365|google one|notion|slack|zoom|github|aws |heroku|openai|anthropic|claude|chatgpt|xing premium|linkedin premium|audible|kindle unlimited|apple tv\+|sky ticket|wow streaming|maxdome|joyn\+|tidal|deezer|napster|crunchyroll|curiosity stream|mubi|arte mediathek abo)$/i;
-// Sekundäre Erkennung: enthält diese Muster – aber nur wenn KEIN Ausschluss-Match
-const ABO_EXCLUDE=/baumarkt|hornbach|obi|bauhaus|hagebau|lidl|aldi|rewe|edeka|dm |rossmann|müller|saturn|mediamarkt|telekom|vodafone|o2|1&1|congstar|freenet|klarmobil|eon|engie|vattenfall|gas|strom|versicherung|rundfunk|gez|sparkasse|volksbank|postbank|ing |dkb /i;
+const ABO_KEYWORDS=/netflix|spotify|amazon prime|prime video|disney|dazn|youtube premium|apple music|apple one|icloud|dropbox|adobe|microsoft 365|office 365|google one|notion|slack|zoom|github|aws|heroku|openai|anthropic|claude|chatgpt|xing|linkedin|audible|kindle unlimited|software|subscription|abo|monats|jahres/i;
 
 function detectAbos(all){
   // WHY: Gleicher Händler, ähnlicher Betrag, mindestens 2x – das ist ein Abo
-  // Aber nur für eindeutig digitale Dienste – nicht Tankstellen, Baumärkte etc.
   const byShop={};
   all.filter(b=>b.date&&b.brutto).forEach(b=>{
-    const shopLow=(b.shop||'').toLowerCase();
-    // Ausschluss: bekannte Nicht-Abo-Kategorien überspringen
-    if(ABO_EXCLUDE.test(shopLow)) return;
-    const key=shopLow.trim().substring(0,30);
+    const key=(b.shop||'unbekannt').toLowerCase().trim().substring(0,30);
     if(!byShop[key])byShop[key]={shop:b.shop,belege:[],brutto:[]};
     byShop[key].belege.push(b);
     byShop[key].brutto.push(b.brutto);
@@ -2397,24 +1898,10 @@ function renderInsightBanner(abos,potential){
 // Monitore, Dashboards und Screens sauber. Der erweiterte Prompt
 // extrahiert zusätzlich Garantie-relevante und Abo-Signale.
 // ════════════════════════════════════════════════════════
-function openScanner(){document.getElementById('scanOvl').classList.add('on');setScanType(appMode==='priv'?'priv':'er');}
+function openScanner(){document.getElementById('scanOvl').classList.add('on');setScanType('er');}
 function closeScanner(){document.getElementById('scanOvl').classList.remove('on');stopCam();}
 function closeScanOuter(e){if(e.target===document.getElementById('scanOvl'))closeScanner();}
-function setScanType(t){
-  scanType=t;
-  // WHY: Nur ER/AR Buttons toggeln – kein PRIV-Button mehr im Scanner
-  ['er','ar'].forEach(x=>{
-    const el=document.getElementById('tt'+x.toUpperCase());
-    if(el) el.className='seg-btn'+(t===x?' on':'');
-  });
-  const isPriv=t==='priv';
-  // Seg-Buttons und Privat-Hinweis je nach Modus ein/ausblenden
-  const seg=document.getElementById('bizSeg');
-  if(seg) seg.style.display=isPriv?'none':'grid';
-  document.getElementById('bizFields').style.display=isPriv?'none':'grid';
-  document.getElementById('privFields').style.display=isPriv?'grid':'none';
-  document.getElementById('privScanHint').style.display=isPriv?'block':'none';
-}
+function setScanType(t){scanType=t;['er','ar'].forEach(x=>{document.getElementById('tt'+x.toUpperCase()).className='seg-btn'+(t===x?' on':'');});}
 
 async function startCam(){
   try{
@@ -2542,12 +2029,6 @@ function resetScan(){
   document.getElementById('resWrap').classList.remove('on');
   document.getElementById('progWrap').style.display='none';
   document.getElementById('btnStop').style.display='none';
-  // WHY: Items-Tabelle + RC-Banner immer leeren
-  const bd=document.getElementById('itemsB');if(bd)bd.innerHTML='';
-  const rcDiv=document.getElementById('rcBanner');if(rcDiv)rcDiv.innerHTML='';
-  const sec=document.getElementById('itemsSec');if(sec)sec.style.display='none';
-  // Privat-Felder auch leeren
-  try{document.getElementById('pShop').value='';document.getElementById('pBrutto').value='';}catch(e){}
   // File-Inputs zurücksetzen damit dasselbe Foto nochmal wählbar ist
   try{document.getElementById('fi').value='';document.getElementById('fiGal').value='';}catch(e){}
 }
@@ -2580,7 +2061,6 @@ async function processImg(b64){
   try{
     setLog('📤 Bild wird gesendet …'); setP(15);
     const res = await askClaude(b64);
-    trackApiCost('scan', b64.length);
     setP(95); setLog('✓ Analyse abgeschlossen.');
     incrKiScans();
     curRes = res;
@@ -2651,30 +2131,12 @@ WICHTIGE REGELN:
 3. Wenn Netto und Brutto sichtbar: berechne MwSt = Brutto - Netto
 4. Wenn nur Brutto sichtbar und MwSt-Satz erkennbar: berechne Netto = Brutto / 1.${cfg().mwstH}
 5. mwstRate: nur die Zahl (19 nicht "19%")
-6. WICHTIG – Folgende Aussteller sind MwSt-BEFREIT → mwst:0, mwstRate:0:
-   - Finanzamt, Finanzämter, Finanzbehörde
-   - Krankenhaus, Arzt, Arztpraxis, Heilpraktiker, Zahnarzt, Physiotherapie
-   - Apotheke (nur rezeptpflichtige Medikamente – Pauschal: mwstRate:0 wenn nur Medikamente)
-   - GEZ, Rundfunkbeitrag, ARD ZDF
-   - Öffentliche Verkehrsbetriebe (BVG, MVG, HVV, VGN, Stadtwerke, DB Nahverkehr)
-   - Gemeinde, Stadt, Landkreis, Bürgeramt, Standesamt, Behörden
-   - Notar, Gericht, Gerichtsgebühren
-   - Versicherungen (Versicherungsteuer ≠ MwSt)
-   Bei diesen: mwst immer 0, mwstRate immer 0
 6. category muss GENAU einer dieser Werte sein: Lebensmittel, Restaurant, Elektronik, Kleidung, Tanken, Haushalt, Gesundheit, Dienstleistung, Software, Sonstiges
 7. payment muss GENAU einer dieser Werte sein: Karte, Bar, Überweisung, Online
 8. istAbo=true wenn monatliche/jährliche Gebühr erkennbar
 9. garantieMonate=24 für Elektronik/Geräte, 12 für Möbel, sonst null
 10. Fehlende oder unlesbare Felder: null (nicht 0, nicht "")`;
 
-  // WHY: Foto-Qualitäts-Check vor API-Call – spart Kosten bei schlechten Fotos
-  if(capB64){
-    const bytes=(capThumb||capB64).length*0.75;
-    if(bytes<5000){
-      const ok=confirm('⚠️ Das Foto scheint sehr klein oder dunkel zu sein.\nTrotzdem analysieren? (Kostet API-Guthaben)');
-      if(!ok) return;
-    }
-  }
   setLog('🤖 Claude analysiert Bild …'); setP(40);
 
   const resp = await fetch('https://api.anthropic.com/v1/messages', {
@@ -2776,31 +2238,6 @@ WICHTIGE REGELN:
 
 function showRes(r){
   if(!r)return;
-  // WHY: Bei Privat-Scan Privat-Felder + Items befüllen
-  if(scanType==='priv'){
-    document.getElementById('pShop').value=r.shop||'';
-    document.getElementById('pDate').value=r.date||new Date().toISOString().split('T')[0];
-    document.getElementById('pBrutto').value=r.brutto!=null?r.brutto.toFixed(2):'';
-    if(r.category)document.getElementById('pCat').value=r.category;
-    if(r.payment)document.getElementById('pPay').value=r.payment;
-    // WHY: Items immer neu befüllen – sonst bleibt vorheriger Scan stehen
-    const pbd=document.getElementById('itemsB');
-    if(pbd) pbd.innerHTML='';
-    if(r.items&&r.items.length){
-      document.getElementById('itemsSec').style.display='block';
-      r.items.forEach(it=>{
-        const tr=document.createElement('tr');
-        const p=parseFloat(it.price)||0;
-        tr.innerHTML=`<td>${eh(it.name||'–')}</td><td style="text-align:right" class="mono">${p.toFixed(2)} ${cfg().currency}</td>`;
-        if(pbd) pbd.appendChild(tr);
-      });
-    } else {
-      document.getElementById('itemsSec').style.display='none';
-    }
-    const rib=document.getElementById('retryKiBtn');if(rib)rib.style.display='none';
-    document.getElementById('resWrap').classList.add('on');
-    return;
-  }
   document.getElementById('rShop').value=r.shop||'';
   document.getElementById('rDate').value=r.date||new Date().toISOString().split('T')[0];
   document.getElementById('rNet').value=r.net!=null?r.net.toFixed(2):'';
@@ -2820,20 +2257,6 @@ function showRes(r){
       bd.appendChild(tr);
     });
   }else document.getElementById('itemsSec').style.display='none';
-  // RC-Check nach Shop-Erkennung
-  if(r.shop && detectReverseCharge(r.shop)) {
-    let rcDiv = document.getElementById('rcBanner');
-    if(!rcDiv){ rcDiv=document.createElement('div'); rcDiv.id='rcBanner';
-      const rw=document.getElementById('resWrap'); if(rw) rw.prepend(rcDiv); }
-    rcDiv.innerHTML = rcBannerHtml(r.shop, r.brutto||0, r.mwstRate||19);
-    // Automatisch MwSt auf 0 setzen bei RC-Anbietern
-    if(scanType !== 'priv'){
-      document.getElementById('rMwst').value = '0.00';
-      if(r.brutto) document.getElementById('rNet').value = r.brutto.toFixed(2);
-    }
-  } else {
-    const rcDiv = document.getElementById('rcBanner'); if(rcDiv) rcDiv.innerHTML='';
-  }
   // KI-erneut-Button ausblenden wenn KI erfolgreich war
   const rib = document.getElementById('retryKiBtn');
   if(rib) rib.style.display='none';
@@ -2844,14 +2267,6 @@ function showRes(r){
 // Wird aufgerufen wenn kein Key da ist oder KI fehlschlägt.
 // "KI erneut starten" Button erscheint sobald Key gesetzt wurde.
 function showManualForm(){
-  // WHY: Bei Privat nur Privat-Felder clearen
-  if(scanType==='priv'){
-    document.getElementById('pShop').value='';
-    document.getElementById('pDate').value=new Date().toISOString().split('T')[0];
-    document.getElementById('pBrutto').value='';
-    document.getElementById('resWrap').classList.add('on');
-    return;
-  }
   document.getElementById('rShop').value='';
   document.getElementById('rDate').value=new Date().toISOString().split('T')[0];
   document.getElementById('rNet').value='';
@@ -2900,46 +2315,16 @@ function retryKi(){
 // ██ MODUL: BELEG SPEICHERN
 // ════════════════════════════════════════════════════════
 async function saveBeleg(){
-  // ── PRIVAT-BELEG: komplett andere Logik ──
-  if(scanType==='priv'){
-    const item={
-      type:'priv',
-      belegNr:null,  // WHY: Privat-Belege bekommen KEINE Nummer
-      shop:document.getElementById('pShop').value||'Unbekannt',
-      date:document.getElementById('pDate').value||new Date().toISOString().split('T')[0],
-      brutto:parseFloat(document.getElementById('pBrutto').value)||0,
-      net:null, mwst:null, mwstRate:null,  // WHY: MwSt irrelevant bei Privat
-      cat:document.getElementById('pCat').value,
-      payment:document.getElementById('pPay').value,
-      items:curRes?.items||[],
-      image:capThumb||capB64,
-      savedAt:Date.now(),
-      istAbo:curRes?.istAbo||false,
-      garantieBis:null,
-      isDigitalScreen:curRes?.isDigitalScreen||false,
-      screenType:curRes?.screenType||null
-    };
-    try{
-      await dbadd(item);
-      toast('Privat-Beleg gespeichert ✓','ok');
-      closeScanner();resetScan();renderHome();
-    }catch(e){toast('Fehler: '+e.message,'er');}
-    return;
-  }
-
-  // ── BUSINESS-BELEG (er/ar): bisherige Logik ──
   const brutto=parseFloat(document.getElementById('rBrutto').value)||0;
-  let mwst=parseFloat(document.getElementById('rMwst').value)||0;
-  let net=parseFloat(document.getElementById('rNet').value)||0;
-  // WHY: Automatische MwSt-Korrektur für bekannte befreite Stellen
-  const shopVal=(document.getElementById('rShop').value||'').toLowerCase();
-  const MWST_FREI=/finanzamt|finanzbehörde|krankenkasse|krankenhaus|arztpraxis|zahnarzt|heilpraktiker|physiotherap|rundfunkbeitrag|gez|bvg|mvg|hvv|vgn|s-bahn gmbh|stadtwerke.*verkehr|db regio|notar.*gebühr|amtsgericht|standesamt|bürgeramt/i;
-  if(MWST_FREI.test(shopVal)){mwst=0;net=brutto;}
+  const mwst=parseFloat(document.getElementById('rMwst').value)||0;
+  const net=parseFloat(document.getElementById('rNet').value)||0;
   let nr;
+  // WHY: Bei AR von Monitor erkannte externe Rechnungsnummer verwenden
   if(scanType==='ar'&&curRes?.belegNrExtern){
     nr=curRes.belegNrExtern;arC++;localStorage.setItem('arc',arC);
   }else{nr=nextNr(scanType);}
 
+  // WHY: Garantiedatum berechnen und speichern wenn Elektrogerät erkannt
   let garantieBis=null;
   if(curRes?.garantieMonate&&document.getElementById('rDate').value){
     const kauf=new Date(document.getElementById('rDate').value+'T00:00:00');
@@ -2947,16 +2332,14 @@ async function saveBeleg(){
     garantieBis=kauf.toISOString().split('T')[0];
   }
 
-  const shopVal2 = document.getElementById('rShop').value||'Unbekannt';
-  const isRC = detectReverseCharge(shopVal2);
   const item={type:scanType,belegNr:nr,
-    shop:shopVal2,
+    shop:document.getElementById('rShop').value||'Unbekannt',
     date:document.getElementById('rDate').value||new Date().toISOString().split('T')[0],
     net,mwst,brutto,
     mwstRate:parseFloat(document.getElementById('rRate').value)||cfg().mwstH,
     cat:document.getElementById('rCat').value,payment:document.getElementById('rPay').value,
     items:curRes?.items||[],image:capThumb||capB64,savedAt:Date.now(),
-    reverseCharge:isRC,bewirtung:null,
+    // WHY: Neue Intelligenz-Felder – aus OCR-Daten abgeleitet, kein manuelles Ausfüllen nötig
     istAbo:curRes?.istAbo||false,
     garantieBis,
     isDigitalScreen:curRes?.isDigitalScreen||false,
@@ -2966,42 +2349,40 @@ async function saveBeleg(){
     await dbadd(item);
     toast(nr+' gespeichert ✓','ok');
     closeScanner();resetScan();updCounters();renderHome();
-    checkBewirtungPrompt(item);
-    // WHY: MwSt-Tab sofort aktuell halten – egal ob gerade geöffnet oder nicht
-    if(appMode==='biz') renderMwst();
-    if(kiScanCount===10) triggerBong('10 KI-Scans geschafft – du hast bereits ~19 Minuten Lebenszeit gespart.','milestone');
-    if(brutto>=500&&scanType==='er'){const vstRueck=(item.mwst||0);if(vstRueck>=50)triggerBong(`${fm(vstRueck)} € Vorsteuer aus diesem Beleg zurückholen – fällig in der nächsten Voranmeldung.`,'vorsteuer');}
+
+    // WHY: Bong-Trigger bei relevanten Meilensteinen
+    // 10. Scan = erste große Zeiteinsparung sichtbar
+    if(kiScanCount === 10){
+      triggerBong('10 KI-Scans geschafft – du hast bereits ~19 Minuten Lebenszeit gespart.','milestone');
+    }
+    // Hoher Betrag = mögliche große Steuererstattung
+    if(brutto >= 500 && scanType === 'er'){
+      const vstRueck = (item.mwst||0);
+      if(vstRueck >= 50){
+        triggerBong(`${fm(vstRueck)} € Vorsteuer aus diesem Beleg zurückholen – fällig in der nächsten Voranmeldung.`,'vorsteuer');
+      }
+    }
   }catch(e){toast('Fehler: '+e.message,'er');}
 }
 
 // ════════════════════════════════════════════════════════
 // ██ MODUL: BELEGE LIST
 // ════════════════════════════════════════════════════════
-// WHY: Artikel-Zeile für Belege-Listen – kompakt, max 3 Items
-function renderItemsLine(items){
-  if(!items||!items.length) return '';
-  const names=items.slice(0,3).map(i=>eh(i.name||'–')).join(' · ');
-  const mehr=items.length>3?` +${items.length-3}`:'';
-  return `<div style="font-size:10px;font-weight:300;color:var(--txt3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${names}${mehr}</div>`;
-}
 async function renderBelege(){
   const all=await dba();
   const q=(document.getElementById('srch').value||'').toLowerCase();
   const tf=document.getElementById('ftT').value,cf=document.getElementById('ftC').value;
-  // WHY: Privat-Belege (type='priv') gehören NICHT in die Business-Liste
-  let it=all.filter(b=>b.type!=='priv'&&(!q||b.shop.toLowerCase().includes(q)||(b.belegNr||'').toLowerCase().includes(q)||(b.items||[]).some(i=>(i.name||'').toLowerCase().includes(q)))&&(!tf||b.type===tf)&&(!cf||b.cat===cf));
+  let it=all.filter(b=>(!q||b.shop.toLowerCase().includes(q)||(b.belegNr||'').toLowerCase().includes(q))&&(!tf||b.type===tf)&&(!cf||b.cat===cf));
   it.sort((a,b)=>(b.date||'')>(a.date||'')?1:-1);
   const l=document.getElementById('bList');
   if(!it.length){l.innerHTML='<div class="empty"><div class="ico">🧾</div><p>Keine Belege gefunden.</p></div>';return;}
-  renderPrivatChart(it);
   l.innerHTML=it.map(b=>`<div class="bc" onclick="showDetail(${b.id})">
     <div class="bc-bar" style="background:${b.type==='er'?'var(--blu)':'var(--ylw)'}"></div>
     <div class="bc-th">${b.image?`<img src="${b.image}" alt="">`:'🧾'}</div>
     <div class="bc-inf">
-      <div class="bc-sh">${eh(b.shop||'Unbekannt')}${gobdBadgeHtml(b)}</div>
+      <div class="bc-sh">${eh(b.shop||'Unbekannt')}</div>
       <div class="bc-me"><span class="badge ${b.type==='er'?'b-er':'b-ar'}">${b.type==='er'?'Eingang':'Ausgang'}</span>${eh(b.cat||'')}${b.istAbo?'<span class="badge b-priv">Abo</span>':''}${b.garantieBis?'<span style="font-size:9px;color:var(--grn)">🛡️</span>':''}${b.isDigitalScreen?'<span style="font-size:9px;color:var(--silv)">🖥️</span>':''}</div>
       <div class="bc-nr">${eh(b.belegNr||'')}</div>
-      ${renderItemsLine(b.items)}
     </div>
     <div class="bc-r">
       <div class="bc-am ${b.type}">${b.brutto!=null?fm(b.brutto)+' '+cfg().currency:'–'}</div>
@@ -3010,159 +2391,37 @@ async function renderBelege(){
 }
 
 // ════════════════════════════════════════════════════════
-// ██ MODUL: PRIVAT-BELEGE LIST + KI-ANALYSE
-// WHY: Komplett getrennt von Business. Nur Gesamtbetrag,
-// keine Belegnummer, keine MwSt. KI-Analyse optional auf Knopfdruck.
-// ════════════════════════════════════════════════════════
-async function renderPrivatBelege(){
-  const all=await dba();
-  // WHY: Nur Privat-Belege (type='priv')
-  const cf=document.getElementById('pftC')?.value||'';
-  const mf=document.getElementById('pftM')?.value||'';
-  let it=all.filter(b=>b.type==='priv');
-  if(cf) it=it.filter(b=>b.cat===cf);
-  if(mf) it=it.filter(b=>(b.date||'').substring(5,7)===mf);
-  it.sort((a,b)=>(b.date||'')>(a.date||'')?1:-1);
-
-  // Summe + Zähler
-  const total=it.reduce((s,b)=>s+(b.brutto||0),0);
-  const td=document.getElementById('privTotalDisp'),cd=document.getElementById('privCountDisp');
-  if(td)td.textContent=fm(total)+' '+cfg().currency;
-  if(cd)cd.textContent=it.length+' Beleg'+(it.length!==1?'e':'');
-
-  const l=document.getElementById('pList');
-  if(!it.length){
-    l.innerHTML='<div class="empty"><div class="ico">🏠</div><p>Noch keine privaten Belege.<br>Im Privat-Modus scannen oder Schnelleingabe nutzen.</p></div>';
-    renderPrivatChart([]);
-    return;
-  }
-  l.innerHTML=it.map(b=>`<div class="bc" onclick="showDetail(${b.id})">
-    <div class="bc-bar" style="background:var(--silv)"></div>
-    <div class="bc-th">${b.image?`<img src="${b.image}" alt="">`:'🧾'}</div>
-    <div class="bc-inf">
-      <div class="bc-sh">${eh(b.shop||'Unbekannt')}</div>
-      <div class="bc-me"><span class="badge" style="background:rgba(136,153,170,.12);color:var(--silv)">🏠 Privat</span> ${eh(b.cat||'')}${b.istAbo?'<span class="badge b-priv">Abo</span>':''}</div>
-      ${renderItemsLine(b.items)}
-    </div>
-    <div class="bc-r">
-      <div class="bc-am" style="color:var(--silv)">${fm(b.brutto||0)} ${cfg().currency}</div>
-      <div class="bc-dt">${fd(b.date)}</div>
-    </div></div>`).join('');
-}
-
-// WHY: Auf Knopfdruck – analysiert IMMER den aktuellen Monat.
-// Der Nutzer bekommt eine klare Monatsübersicht ohne manuellen Filter.
-async function analysePrivatMonat(){
-  apiKey=localStorage.getItem('cak')||apiKey||'';
-  if(!apiKey){toast('Bitte erst API Key in Settings hinterlegen','er');openApiSheet();return;}
-
-  // WHY: Sofort visuelles Feedback – Button deaktivieren + Spinner
-  const btn=document.querySelector('[onclick="analysePrivatMonat()"]');
-  if(btn){btn.disabled=true;btn.style.opacity='0.5';btn.innerHTML=btn.innerHTML.replace('KI-Analyse','⏳ Lädt …');}
-
-  const now=new Date();
-  const monat=String(now.getMonth()+1).padStart(2,'0');
-  const jahr=now.getFullYear();
-  const monatName=now.toLocaleDateString('de-DE',{month:'long',year:'numeric'});
-
-  const all=await dba();
-  const it=all.filter(b=>b.type==='priv'&&(b.date||'').startsWith(`${jahr}-${monat}`));
-
-  if(!it.length){
-    if(btn){btn.disabled=false;btn.style.opacity='';btn.innerHTML=btn.innerHTML.replace('⏳ Lädt …','KI-Analyse');}
-    toast(`Keine privaten Belege für ${monatName}`,'wr');
-    return;
-  }
-
-  const card=document.getElementById('privAnalyseCard');
-  card.style.display='block';
-  card.innerHTML=`<div style="display:flex;align-items:center;gap:10px;color:var(--txt3)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" opacity=".2"/><path d="M12 3a9 9 0 019 9"/></svg><span>Analysiere ${it.length} Belege aus ${monatName} …</span></div>`;
-
-  const summary=it.map(b=>`- ${fd(b.date)}: ${b.shop||'?'} | ${b.cat||'?'} | ${fm(b.brutto||0)} € | Artikel: ${(b.items||[]).map(i=>i.name).join(', ')||'–'}`).join('\n');
-  const total=it.reduce((s,b)=>s+(b.brutto||0),0);
-  const byCat={};it.forEach(b=>{byCat[b.cat||'?']=(byCat[b.cat||'?']||0)+(b.brutto||0);});
-  const catSummary=Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`${c}: ${fm(v)} €`).join(', ');
-
-  const prompt=`Du bist ein persönlicher Finanzassistent für Privatausgaben im deutschsprachigen Raum.\n\nAnalysiere meine privaten Ausgaben für ${monatName} und gib konkrete Tipps auf Deutsch:\n\nMONAT: ${monatName}\nGESAMTAUSGABEN: ${fm(total)} €\nNACH KATEGORIE: ${catSummary}\n\nBELEGE DIESES MONATS:\n${summary}\n\nDEINE ANALYSE:\n1. 🏷️ TOP-AUSGABEN: Was kostet am meisten – ist das angemessen?\n2. 💡 SPARPOTENTIAL: Wo könnte ich konkret sparen? Keine allgemeinen Tipps.\n3. 🥗 LEBENSMITTEL & GESUNDHEIT (falls Belege vorhanden): Sind die Produkte ausgewogen? Was fehlt oder ist zu viel?\n4. 🔄 MUSTER: Wiederkehrende Ausgaben oder mögliche Abos die ich kündigen könnte?\n5. ⭐ MEIN TIPP FÜR NÄCHSTEN MONAT: Die eine konkrete Maßnahme mit dem größten Effekt.\n\nAntworte direkt und praktisch auf Deutsch. Maximal 250 Wörter.`;
-
-  try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:700,messages:[{role:'user',content:prompt}]})
-    });
-    const respText=await resp.text().catch(()=>'');
-    trackApiCost('analyse');
-    if(!resp.ok){card.textContent='❌ API Fehler '+resp.status;return;}
-    let data;try{data=JSON.parse(respText);}catch(e){card.textContent='❌ Netzwerkfehler – nochmal versuchen';return;}
-    const text=data.content?.filter(c=>c.type==='text').map(c=>c.text).join('')||'Keine Antwort';
-    card.innerHTML=`<div style="font-size:10px;font-weight:300;color:var(--txt3);margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase">${monatName} · ${fm(total)} € · ${it.length} Belege</div><div style="white-space:pre-wrap">${eh(text)}</div>`;
-  }catch(e){
-    card.textContent='❌ '+e.message;
-  }finally{
-    if(btn){btn.disabled=false;btn.style.opacity='';btn.innerHTML=btn.innerHTML.replace('⏳ Lädt …','KI-Analyse');}
-  }
-}
-
-// ════════════════════════════════════════════════════════
 // ██ MODUL: DETAIL SHEET
 // ════════════════════════════════════════════════════════
 async function showDetail(id){
   const all=await dba();const b=all.find(x=>x.id===id);if(!b)return;
-  curDet=b;
-  const isPriv=b.type==='priv';
-  const isER=b.type==='er';
-
-  let html='';
-  if(b.image) html+=`<img src="${b.image}" alt="" class="det-img">`;
-  html+=`<div class="det-title">${eh(b.shop||'Unbekannt')}</div>`;
-
-  if(isPriv){
-    // WHY: Privat-Detail – keine Belegnummer, keine MwSt, kein Stempel
-    html+=`<div class="det-sub"><span class="badge" style="background:rgba(136,153,170,.12);color:var(--silv)">🏠 Privat-Ausgabe</span></div>`;
-    html+=`<div class="drow"><span class="dk">Datum</span><span class="dv">${fd(b.date)}</span></div>`;
-    html+=`<div class="drow"><span class="dk">Betrag</span><span class="dv" style="color:var(--silv)">${b.brutto!=null?fm(b.brutto)+' '+cfg().currency:'–'}</span></div>`;
-    html+=`<div class="drow"><span class="dk">Kategorie</span><span class="dv">${eh(b.cat||'–')}</span></div>`;
-    html+=`<div class="drow"><span class="dk">Zahlung</span><span class="dv">${eh(b.payment||'–')}</span></div>`;
-    if(b.istAbo) html+=`<div class="drow"><span class="dk">Status</span><span class="dv"><span class="badge b-priv">Abo / wiederkehrend</span></span></div>`;
-    if(b.items&&b.items.length) html+=`<div style="margin-top:10px"><table class="itbl"><thead><tr><th>Artikel</th><th style="text-align:right">Preis</th></tr></thead><tbody>${b.items.map(it=>`<tr><td>${eh(it.name||'–')}</td><td style="text-align:right" class="mono">${(parseFloat(it.price)||0).toFixed(2)} ${cfg().currency}</td></tr>`).join('')}</tbody></table></div>`;
-    html+=`<div class="drow"><span class="dk">Erfasst</span><span class="dv">${new Date(b.savedAt||0).toLocaleString('de-DE')}</span></div>`;
-    html+=`<div style="margin-top:15px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-red btn-sm" onclick="delBeleg(${b.id})">Löschen</button></div>`;
-  } else {
-    // Business-Detail (er/ar)
-    const garantieInfo=b.garantieBis?`<div class="drow"><span class="dk">🛡️ Garantie bis</span><span class="dv" style="color:${new Date(b.garantieBis)<new Date()?'var(--red)':'var(--grn)'}">${fd(b.garantieBis)}</span></div>`:'';
-    const aboInfo=b.istAbo?`<div class="drow"><span class="dk">Status</span><span class="dv"><span class="badge b-priv">Abo / wiederkehrend</span></span></div>`:'';
-    const screenInfo=b.isDigitalScreen?`<div class="drow"><span class="dk">Quelle</span><span class="dv" style="color:var(--silv)">🖥️ Digital Screen ${b.screenType?'('+b.screenType+')':''}</span></div>`:'';
-    html+=`<div class="det-sub"><span class="badge ${isER?'b-er':'b-ar'}">${isER?'Eingangsrechnung':'Ausgangsrechnung'}</span><span class="mono" style="font-size:11px;color:var(--txt3)">${eh(b.belegNr||'')}</span></div>`;
-    html+=`<div class="drow"><span class="dk">Datum</span><span class="dv">${fd(b.date)}</span></div>`;
-    html+=`<div class="drow"><span class="dk">Netto</span><span class="dv">${b.net!=null?fm(b.net)+' '+cfg().currency:'–'}</span></div>`;
-    html+=`<div class="drow"><span class="dk">${cfg().steuerLabel} (${b.mwstRate||cfg().mwstH}%)</span><span class="dv">${b.mwst!=null?fm(b.mwst)+' '+cfg().currency:'–'}</span></div>`;
-    html+=`<div class="drow"><span class="dk">Brutto</span><span class="dv">${b.brutto!=null?fm(b.brutto)+' '+cfg().currency:'–'}</span></div>`;
-    html+=`<div class="drow"><span class="dk">Zahlungsart</span><span class="dv">${eh(b.payment||'–')}</span></div>`;
-    html+=`<div class="drow"><span class="dk">Kategorie</span><span class="dv">${eh(b.cat||'–')}</span></div>`;
-    html+=garantieInfo+aboInfo+screenInfo;
-    html+=`<div class="drow"><span class="dk">Erfasst</span><span class="dv">${new Date(b.savedAt||0).toLocaleString('de-DE')}</span></div>`;
-    if(b.items&&b.items.length) html+=`<div style="margin-top:10px"><table class="itbl"><thead><tr><th>Artikel</th><th style="text-align:right">Preis</th></tr></thead><tbody>${b.items.map(it=>`<tr><td>${eh(it.name||'–')}</td><td style="text-align:right" class="mono">${(parseFloat(it.price)||0).toFixed(2)} ${cfg().currency}</td></tr>`).join('')}</tbody></table></div>`;
-    html+=`<div style="margin-top:15px;display:flex;gap:8px;flex-wrap:wrap">
+  curDet=b;const isER=b.type==='er';
+  const garantieInfo=b.garantieBis?`<div class="drow"><span class="dk">🛡️ Garantie bis</span><span class="dv" style="color:${new Date(b.garantieBis)<new Date()?'var(--red)':'var(--grn)'}">${fd(b.garantieBis)}</span></div>`:'';
+  const aboInfo=b.istAbo?`<div class="drow"><span class="dk">Status</span><span class="dv"><span class="badge b-priv">Abo / wiederkehrend</span></span></div>`:'';
+  const screenInfo=b.isDigitalScreen?`<div class="drow"><span class="dk">Quelle</span><span class="dv" style="color:var(--silv)">🖥️ Digital Screen ${b.screenType?'('+b.screenType+')':''}</span></div>`:'';
+  document.getElementById('detContent').innerHTML=`
+    ${b.image?`<img src="${b.image}" alt="" class="det-img">`:''}
+    <div class="det-title">${eh(b.shop||'Unbekannt')}</div>
+    <div class="det-sub"><span class="badge ${isER?'b-er':'b-ar'}">${isER?'Eingangsrechnung':'Ausgangsrechnung'}</span><span class="mono" style="font-size:11px;color:var(--txt3)">${eh(b.belegNr||'')}</span></div>
+    <div class="drow"><span class="dk">Datum</span><span class="dv">${fd(b.date)}</span></div>
+    <div class="drow"><span class="dk">Netto</span><span class="dv">${b.net!=null?fm(b.net)+' '+cfg().currency:'–'}</span></div>
+    <div class="drow"><span class="dk">${cfg().steuerLabel} (${b.mwstRate||cfg().mwstH}%)</span><span class="dv">${b.mwst!=null?fm(b.mwst)+' '+cfg().currency:'–'}</span></div>
+    <div class="drow"><span class="dk">Brutto</span><span class="dv">${b.brutto!=null?fm(b.brutto)+' '+cfg().currency:'–'}</span></div>
+    <div class="drow"><span class="dk">Zahlungsart</span><span class="dv">${eh(b.payment||'–')}</span></div>
+    <div class="drow"><span class="dk">Kategorie</span><span class="dv">${eh(b.cat||'–')}</span></div>
+    ${garantieInfo}${aboInfo}${screenInfo}
+    <div class="drow"><span class="dk">Erfasst</span><span class="dv">${new Date(b.savedAt||0).toLocaleString('de-DE')}</span></div>
+    ${b.items&&b.items.length?`<div style="margin-top:10px"><table class="itbl"><thead><tr><th>Artikel</th><th style="text-align:right">Preis</th></tr></thead><tbody>${b.items.map(it=>`<tr><td>${eh(it.name||'–')}</td><td style="text-align:right" class="mono">${(parseFloat(it.price)||0).toFixed(2)} ${cfg().currency}</td></tr>`).join('')}</tbody></table></div>`:''}
+    <div style="margin-top:15px;display:flex;gap:8px;flex-wrap:wrap">
       ${b.image?`<button class="btn btn-blu btn-sm" onclick="exportStamped()">PDF mit Stempel</button>`:''}
       ${b.image?`<button class="btn btn-g btn-sm" onclick="exportSinglePDF()">PDF speichern</button>`:''}
       <button class="btn btn-red btn-sm" onclick="delBeleg(${b.id})">Löschen</button>
     </div>`;
-  }
-
-  document.getElementById('detContent').innerHTML=html;
   document.getElementById('detOvl').classList.add('on');
 }
 function closeDet(){document.getElementById('detOvl').classList.remove('on');}
 function closeDetOuter(e){if(e.target===document.getElementById('detOvl'))closeDet();}
-async function delBeleg(id){
-  if(!confirm('Beleg löschen?'))return;
-  const all=await dba();const b=all.find(x=>x.id===id);
-  await dbdel(id);closeDet();
-  // WHY: Je nach Beleg-Typ den richtigen Tab aktualisieren
-  if(b&&b.type==='priv')renderPrivatBelege();else renderBelege();
-  renderHome();toast('Gelöscht','ok');
-}
+async function delBeleg(id){if(!confirm('Beleg löschen?'))return;await dbdel(id);closeDet();renderBelege();renderHome();toast('Gelöscht','ok');}
 async function exportSinglePDF(){if(!curDet?.image){toast('Kein Bild','wr');return;}await exportBelegPDF(curDet,false);}
 
 // ════════════════════════════════════════════════════════
@@ -3200,23 +2459,6 @@ async function renderMwst(){
   document.getElementById('catChart').innerHTML=cats.map(([c,v])=>`<div class="barrow"><div class="bar-lbl">${eh(c)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/maxC*100)}%;background:rgba(74,128,192,.45)"></div></div><div class="bar-val">${fm(v)}</div></div>`).join('');
   // Inflations-Tracker
   await renderInflationsTracker();
-
-  // Reverse-Charge Summen anzeigen
-  const rcBelege = all.filter(b => b.type==='er' && b.reverseCharge);
-  const rcEl = document.getElementById('mRcCard');
-  if(rcBelege.length > 0) {
-    const rcSum = rcBelege.reduce((s,b)=>{
-      const info = getRcInfo(b.brutto||0, b.mwstRate||19);
-      return s + info.rcMwst;
-    }, 0);
-    if(rcEl) {
-      rcEl.style.display = 'block';
-      rcEl.innerHTML = `<div style="font-size:10px;font-weight:300;color:var(--gold);letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px">⚠️ Reverse Charge §13b UStG</div>
-        <div style="font-size:13px;font-weight:300;color:var(--txt2)">${rcBelege.length} Buchungen · selbst abzuführen und abziehbar</div>
-        <div style="font-size:18px;font-weight:200;color:var(--orn);margin:4px 0">${fm(rcSum)} €</div>
-        <div style="font-size:10px;font-weight:300;color:var(--txt3)">Nettoeffekt: 0 € · In UStVA Zeile 52 + 67 eintragen</div>`;
-    }
-  } else if(rcEl) { rcEl.style.display='none'; }
 }
 
 // ════════════════════════════════════════════════════════
@@ -3403,55 +2645,19 @@ function loadStamp(){stamp.firma=localStorage.getItem('sf')||'';stamp.frei=local
 function loadStampUI(){
   loadStamp();document.getElementById('sFirma').value=stamp.firma;document.getElementById('sFrei').value=stamp.frei;
   document.getElementById('cPick').value=stamp.color;document.querySelectorAll('.csw').forEach(s=>s.classList.toggle('on',s.dataset.c===stamp.color));
-  pickTpl(stampTpl); // WHY: pickTpl setzt inline styles explizit – toggle allein nicht zuverlässig
+  document.querySelectorAll('[id^=tpl]').forEach((el,i)=>el.classList.toggle('on',i===stampTpl));refreshStamp();
 }
-function pickTpl(i){
-  stampTpl=parseInt(i);
-  localStorage.setItem('stpl',String(stampTpl));
-  // Alle entfernen, dann aktiven setzen – kein toggle-Zustandsproblem
-  for(let j=0;j<3;j++){
-    const el=document.getElementById('tpl'+j);
-    if(!el) continue;
-    el.classList.remove('on');
-    el.style.borderColor='';el.style.color='';el.style.background='';el.style.fontWeight='';
-  }
-  const active=document.getElementById('tpl'+stampTpl);
-  if(active){
-    active.classList.add('on');
-    active.style.borderColor='var(--gold)';
-    active.style.color='var(--gold)';
-    active.style.background='rgba(186,142,67,.12)';
-    active.style.fontWeight='500';
-  }
-  refreshStamp();
-}
+function pickTpl(i){stampTpl=i;localStorage.setItem('stpl',i);document.querySelectorAll('[id^=tpl]').forEach((el,j)=>el.classList.toggle('on',j===i));refreshStamp();}
 function pickCol(el){document.querySelectorAll('.csw').forEach(s=>s.classList.remove('on'));el.classList.add('on');stamp.color=el.dataset.c;document.getElementById('cPick').value=stamp.color;refreshStamp();}
 function freeCol(inp){stamp.color=inp.value;document.querySelectorAll('.csw').forEach(s=>s.classList.remove('on'));refreshStamp();}
-function refreshStamp(){stamp.firma=document.getElementById('sFirma').value;stamp.frei=document.getElementById('sFrei').value;const previewNr='ER-'+new Date().getFullYear()+'-Q'+Math.ceil((new Date().getMonth()+1)/3)+'-0001';drawStamp(document.getElementById('stmpC'),stamp,previewNr,0);}
+function refreshStamp(){stamp.firma=document.getElementById('sFirma').value;stamp.frei=document.getElementById('sFrei').value;drawStamp(document.getElementById('stmpC'),stamp,'ER-2026-0001',stampTpl);}
 function saveStamp(){localStorage.setItem('sf',stamp.firma);localStorage.setItem('sfr',stamp.frei);localStorage.setItem('sc',stamp.color);toast('Stempel gespeichert','ok');}
-// WHY: Einheitlicher Stempel – kein Stil-Wechsel.
-// Format: EINGANGSRECHNUNG / Jahr · Quartal · Nummer / Firma / Datum
 function drawStamp(cv,cfg2,nr,tpl=0){
-  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,p=10,col=cfg2.color||'#b71c1c';
-  ctx.clearRect(0,0,W,H);ctx.save();
-  // Doppelrahmen
-  ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.strokeRect(p,p,W-p*2,H-p*2);
-  ctx.lineWidth=0.7;ctx.strokeRect(p+4,p+4,W-p*2-8,H-p*2-8);
-  ctx.fillStyle=col;ctx.textAlign='center';
-  // Typ-Zeile
-  const typ=nr.startsWith('AR')||nr.startsWith('ar')?'AUSGANGSRECHNUNG':'EINGANGSRECHNUNG';
-  ctx.font=`bold 9px 'Inter',sans-serif`;ctx.letterSpacing='2px';
-  ctx.fillText(typ,W/2,p+17);
-  // Belegnummer groß
-  ctx.font=`bold 17px 'Courier New',monospace`;ctx.letterSpacing='0px';
-  ctx.fillText(nr,W/2,p+37);
-  // Trennlinie
-  ctx.lineWidth=0.5;ctx.beginPath();ctx.moveTo(p+10,p+43);ctx.lineTo(W-p-10,p+43);ctx.stroke();
-  // Firma
-  if(cfg2.firma){ctx.font=`300 9px 'Inter',sans-serif`;ctx.fillText(cfg2.firma.substring(0,46),W/2,p+55);}
-  // Datum
-  ctx.font=`300 9px monospace`;ctx.fillText(new Date().toLocaleDateString('de-DE'),W/2,p+68);
-  if(cfg2.frei){ctx.font=`300 8px sans-serif`;ctx.fillText(cfg2.frei.substring(0,52),W/2,p+80);}
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,p=9,col=cfg2.color||'#b71c1c';
+  ctx.clearRect(0,0,W,H);ctx.save();ctx.fillStyle=col;
+  if(tpl===0){ctx.strokeStyle=col;ctx.lineWidth=2;ctx.strokeRect(p,p,W-p*2,H-p*2);ctx.lineWidth=.6;ctx.strokeRect(p+3,p+3,W-p*2-6,H-p*2-6);ctx.textAlign='center';ctx.font=`bold 18px 'Courier New',monospace`;ctx.fillText(nr,W/2,p+28);if(cfg2.firma){ctx.font=`400 10px sans-serif`;ctx.fillText(cfg2.firma.substring(0,44),W/2,p+44);}if(cfg2.frei){ctx.font=`400 9px sans-serif`;ctx.fillText(cfg2.frei.substring(0,52),W/2,p+58);}ctx.font=`400 9px monospace`;ctx.fillText(new Date().toLocaleDateString('de-DE'),W/2,p+74);}
+  else if(tpl===1){ctx.fillRect(p,p,6,H-p*2);ctx.fillStyle=col+'15';ctx.fillRect(p+6,p,W-p*2-6,H-p*2);ctx.strokeStyle=col;ctx.lineWidth=.6;ctx.strokeRect(p,p,W-p*2,H-p*2);const lx=p+12;ctx.fillStyle=col;ctx.textAlign='left';ctx.font=`bold 16px monospace`;ctx.fillText(nr,lx,p+22);if(cfg2.firma){ctx.font=`400 10px sans-serif`;ctx.fillText(cfg2.firma.substring(0,40),lx,p+38);}if(cfg2.frei){ctx.font=`400 9px sans-serif`;ctx.fillText(cfg2.frei.substring(0,48),lx,p+52);}ctx.font=`400 9px monospace`;ctx.fillText(new Date().toLocaleDateString('de-DE'),lx,p+68);}
+  else{ctx.strokeStyle=col;ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(p,p+1);ctx.lineTo(W-p,p+1);ctx.stroke();ctx.beginPath();ctx.moveTo(p,H-p-1);ctx.lineTo(W-p,H-p-1);ctx.stroke();ctx.textAlign='center';ctx.font=`bold 16px monospace`;ctx.fillText(nr,W/2,p+20);if(cfg2.firma){ctx.font=`400 10px sans-serif`;ctx.fillText(cfg2.firma.substring(0,44),W/2,p+36);}if(cfg2.frei){ctx.font=`400 9px sans-serif`;ctx.fillText(cfg2.frei.substring(0,52),W/2,p+50);}ctx.font=`400 9px monospace`;ctx.fillText(new Date().toLocaleDateString('de-DE'),W/2,p+66);}
   ctx.restore();
 }
 
@@ -3512,1810 +2718,13 @@ function updApiBanner(){
   if(b)b.style.display=apiKey?'none':'block';
 }
 
-function saveApiKey(){
-  const k=document.getElementById('apiKey').value.trim();
-  if(!k){toast('Bitte Key eingeben','er');return;}
-  if(!k.startsWith('sk-')){toast('Key muss mit sk- beginnen','er');return;}
-  apiKey=k;
-  localStorage.setItem('cak',k);
-  updApiStat();updApiBanner();
-  toast('✓ API Key gespeichert','ok');
-}
-function clearApiKeySettings(){
-  if(!confirm('API Key löschen?'))return;
-  apiKey='';
-  localStorage.removeItem('cak');
-  document.getElementById('apiKey').value='';
-  updApiStat();updApiBanner();
-  toast('Key gelöscht','ok');
-}
+function saveApiKey(){apiKey=document.getElementById('apiKey').value.trim();if(apiKey)localStorage.setItem('cak',apiKey);updApiStat();updApiBanner();toast('API Key gespeichert','ok');}
 function updApiStat(){const s=document.getElementById('apiStat');if(s)s.textContent=apiKey?'✓ Claude API aktiv. Garantie-Wächter + Abo-Detektiv + Monitor-Erkennung aktiv.':'Kein Key – manuelle Eingabe. Intelligenz-Module eingeschränkt.';}
 function resetCounters(){if(!confirm('Zähler zurücksetzen?'))return;erC=0;arC=0;localStorage.setItem('erc','0');localStorage.setItem('arc','0');updCounters();toast('Zurückgesetzt','ok');}
 
 // ════════════════════════════════════════════════════════
 // ██ UTILS
 // ════════════════════════════════════════════════════════
-// ════════════════════════════════════════════════════════
-// ██ MODUL: KONTOAUSZUG-ABGLEICH
-// WHY: Nutzer fotografiert Kontoauszug → KI liest Buchungen →
-// Abgleich gegen alle Belege (priv+biz) → unbekannte Buchungen
-// werden mit KI-Vorschlag angezeigt, Nutzer entscheidet.
-// ════════════════════════════════════════════════════════
-// ════════════════════════════════════════════════════════
-// ██ MODUL: KONTOAUSZUG-ABGLEICH v2
-// WHY: Buchungen persistent in localStorage – bleiben auch
-// nach Tab-Wechsel erhalten. Multi-Upload-Queue verarbeitet
-// mehrere Fotos sequenziell. Status (offen/erfasst/ignoriert)
-// wird pro Buchung gespeichert.
-// ════════════════════════════════════════════════════════
-const KONTO_STORE = 'bsp_konto_v2';
-let kontoQueue = []; // Datei-Queue für Batch-Upload
-let kontoRunning = false;
-
-// Buchungen laden/speichern
-function kontoLoad(){ try{ return JSON.parse(localStorage.getItem(KONTO_STORE)||'[]'); }catch(_){ return []; } }
-function kontoSave(arr){ localStorage.setItem(KONTO_STORE, JSON.stringify(arr)); }
-
-function initKontoView(){
-  renderKontoBuchungen();
-  updKontoStatus();
-}
-
-function updKontoStatus(){
-  const alle = kontoLoad();
-  const offen = alle.filter(t=>t.status==='offen').length;
-  const lbl = document.getElementById('kontoStatusLbl');
-  if(lbl) lbl.textContent = alle.length===0 ? 'Noch keine Buchungen geladen' : `${alle.length} Buchungen · ${offen} offen`;
-}
-
-function setKontoLog(m,p){
-  const el=document.getElementById('kontoLog'); if(el) el.textContent=m;
-  if(p!==undefined){ const f=document.getElementById('kontoFill'); if(f) f.style.width=p+'%'; }
-}
-
-// ── Multi-Upload Queue ──
-function kontoQueueAdd(inp){
-  const files=Array.from(inp.files||[]);
-  if(!files.length) return;
-  kontoQueue.push(...files);
-  renderKontoQueue();
-  try{inp.value='';}catch(_){}
-}
-
-function renderKontoQueue(){
-  const wrap=document.getElementById('kontoQueue');
-  const list=document.getElementById('kontoQueueList');
-  if(!kontoQueue.length){ if(wrap) wrap.style.display='none'; return; }
-  if(wrap) wrap.style.display='block';
-  if(list) list.innerHTML=kontoQueue.map((f,i)=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="color:var(--txt3)">${i+1}.</span> <span>${f.name||'Foto '+(i+1)}</span></div>`).join('');
-}
-
-async function kontoQueueStart(){
-  apiKey=localStorage.getItem('cak')||apiKey||'';
-  if(!apiKey){toast('Bitte erst API Key hinterlegen','er');openApiSheet();return;}
-  if(kontoRunning){toast('Analyse läuft bereits …','wr');return;}
-  if(!kontoQueue.length){toast('Keine Dateien in der Warteschlange','wr');return;}
-
-  kontoRunning=true;
-  const btn=document.getElementById('kontoQueueBtn');
-  if(btn){btn.disabled=true;btn.textContent='⏳ Analysiere …';}
-  document.getElementById('kontoProg').style.display='block';
-
-  const total=kontoQueue.length;
-  for(let i=0;i<total;i++){
-    const f=kontoQueue[i];
-    setKontoLog(`📷 Bild ${i+1} von ${total}: ${f.name||'Foto'}`,Math.round((i/total)*80));
-    await kontoAnalyseFile(f);
-  }
-  kontoQueue=[];
-  renderKontoQueue();
-  setKontoLog(`✓ Alle ${total} Bilder analysiert · Gleiche ab …`,95);
-  await kontoAbgleichAlle();
-  // WHY: Erst rendern, dann Progress ausblenden – sonst Reihenfolge-Bug
-  renderKontoBuchungen();
-  updKontoStatus();
-  kontoRunning=false;
-  if(btn){btn.disabled=false;btn.textContent='Alle analysieren starten';}
-  // WHY: Kurz warten dann Progress ausblenden – Ergebnis ist schon im DOM
-  setTimeout(()=>{
-    const p=document.getElementById('kontoProg');
-    if(p) p.style.display='none';
-    setKontoLog('Bereit …',0);
-  },1200);
-  // WHY: Sicherstellen dass Konto-View aktiv und sichtbar ist
-  showView('konto');
-  toast(`Analyse fertig · ${document.querySelectorAll('#kontoUnknownList > div').length} offen`,'ok');
-}
-
-async function kontoAnalyseFile(file){
-  return new Promise(res=>{
-    const reader=new FileReader();
-    reader.onload=async e=>{
-      try{
-        const raw=e.target.result;
-        const compressed=await compressImage(raw,1024,0.82);
-        const mt=compressed.startsWith('data:image/png')?'image/png':'image/jpeg';
-        const imgData=compressed.split(',')[1];
-
-        const prompt=`Du bist ein präziser Kontoauszug-Scanner für deutsche Bankkonten.
-
-Lies ALLE sichtbaren Kontobuchungen/Transaktionen aus diesem Kontoauszug oder Banking-Screenshot.
-
-ANTWORTE NUR mit einem JSON-Array, ohne Erklärung, ohne Markdown:
-[{"datum":"YYYY-MM-DD","betrag":-29.99,"beschreibung":"REWE SAGT DANKE","typ":"ausgabe"}]
-
-REGELN:
-- betrag: negative Zahl für Ausgaben, positive für Eingänge
-- datum: immer YYYY-MM-DD Format
-- beschreibung: exakt wie auf dem Auszug
-- typ: "ausgabe" oder "eingang"
-- Nur echte Buchungen, keine Salden`;
-
-        trackApiCost('konto', imgData.length);
-
-        const resp=await fetch('https://api.anthropic.com/v1/messages',{
-          method:'POST',
-          headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-          body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:2000,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mt,data:imgData}},{type:'text',text:prompt}]}]})
-        });
-        const txt=await resp.text().catch(()=>'');
-        if(!resp.ok){res();return;}
-        let data;try{data=JSON.parse(txt);}catch(_){res();return;}
-        const rawText=data.content?.filter(c=>c.type==='text').map(c=>c.text).join('')||'';
-        let neu=null;
-        try{neu=JSON.parse(rawText.trim());}catch(_){}
-        if(!neu){const m=rawText.match(/\[[\s\S]*\]/);if(m)try{neu=JSON.parse(m[0]);}catch(_){}}
-        if(neu&&neu.length){
-          // Zu bestehenden hinzufügen – Duplikate vermeiden (gleicher Betrag+Datum+Beschreibung)
-          const existing=kontoLoad();
-          let added=0;
-          for(const t of neu){
-            const dup=existing.find(e=>e.datum===t.datum&&e.betrag===t.betrag&&e.beschreibung===t.beschreibung);
-            if(!dup){ existing.push({...t, id:Date.now()+Math.random(), status:'offen', vorschlag:null}); added++; }
-          }
-          kontoSave(existing);
-          setKontoLog(`✓ +${added} neue Buchungen`,undefined);
-        }
-      }catch(e){console.error(e);}
-      res();
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-async function kontoAbgleichAlle(){
-  const alle=kontoLoad();
-  if(!alle.length) return;
-  const belege=await dba();
-  const updated=alle.map(t=>{
-    if(t.status!=='offen') return t;
-    if(t.typ==='eingang') return t;
-    const betrag=Math.abs(t.betrag);
-    const tDatum=new Date((t.datum||new Date().toISOString().split('T')[0])+'T00:00:00');
-    const match=belege.find(b=>{
-      if(!b.brutto||!b.date)return false;
-      return Math.abs(Math.abs(b.brutto)-betrag)<=0.50&&Math.abs((tDatum-new Date(b.date+'T00:00:00'))/(86400000))<=3;
-    });
-    if(match) return {...t, status:'abgeglichen', belegShop:match.shop, belegNr:match.belegNr};
-    return {...t, vorschlag:guessKategorie(t.beschreibung)};
-  });
-  kontoSave(updated);
-}
-
-function renderKontoBuchungen(){
-  const alle=kontoLoad();
-  const unbekannt=alle.filter(t=>t.status==='offen'&&t.typ!=='eingang');
-  const abgeglichen=alle.filter(t=>t.status==='abgeglichen');
-
-  const uSec=document.getElementById('kontoUnknownSec');
-  const mSec=document.getElementById('kontoMatchedSec');
-
-  if(unbekannt.length){
-    uSec.style.display='block';
-    document.getElementById('kontoUnknownCount').textContent=unbekannt.length+' offen';
-    document.getElementById('kontoUnknownList').innerHTML=unbekannt.map(t=>{
-      const id=t.id;
-      const v=t.vorschlag||{kat:'Sonstiges',typ:'priv'};
-      return `<div id="ku_${id}" style="background:var(--s2);border:1px solid rgba(192,112,48,.25);
-        border-radius:var(--r8);padding:10px 12px;margin-bottom:8px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-          <div style="flex:1;min-width:0">
-            <div style="font-size:12px;font-weight:300;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${eh(t.beschreibung||'')}</div>
-            <div style="font-size:10px;font-weight:300;color:var(--txt3)">${fd(t.datum)} · Vorschlag: ${v.kat} (${v.typ==='biz'?'Business':'Privat'})</div>
-          </div>
-          <div style="font-size:13px;font-weight:300;color:var(--orn);margin-left:8px;flex-shrink:0">${fm(Math.abs(t.betrag))} €</div>
-        </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="btn btn-sm" style="background:rgba(136,153,170,.1);border:1px solid rgba(136,153,170,.25);color:var(--silv);font-size:11px" onclick="kontoErfasse('${id}','priv')">🏠 Privat</button>
-          <button class="btn btn-sm" style="background:rgba(74,128,192,.1);border:1px solid rgba(74,128,192,.25);color:var(--blu);font-size:11px" onclick="kontoErfasse('${id}','biz')">💼 Business</button>
-          <button class="btn btn-sm" style="background:transparent;border:1px solid var(--br);color:var(--txt3);font-size:11px" onclick="kontoIgnoriere('${id}')">— Ignorieren</button>
-        </div>
-      </div>`;
-    }).join('');
-  } else { uSec.style.display='none'; }
-
-  if(abgeglichen.length){
-    mSec.style.display='block';
-    document.getElementById('kontoMatchedList').innerHTML=abgeglichen.map(t=>`
-      <div style="background:var(--s2);border:1px solid rgba(58,175,112,.15);border-radius:var(--r8);
-        padding:9px 12px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">
-        <div style="flex:1;min-width:0">
-          <div style="font-size:12px;font-weight:300;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${eh(t.beschreibung||'')}</div>
-          <div style="font-size:10px;font-weight:300;color:var(--txt3)">${fd(t.datum)} · Beleg: ${eh(t.belegShop||'')} ${eh(t.belegNr||'')}</div>
-        </div>
-        <div style="color:var(--grn);font-size:13px;margin-left:8px;flex-shrink:0">${fm(Math.abs(t.betrag))} €</div>
-      </div>`).join('');
-  } else { mSec.style.display='none'; }
-}
-
-async function kontoErfasse(id, typ){
-  const alle=kontoLoad();
-  const t=alle.find(x=>String(x.id)===String(id));
-  if(!t) return;
-
-  const v=t.vorschlag||{kat:'Sonstiges',typ:'priv'};
-  const item={
-    type: typ==='priv'?'priv':'er',
-    belegNr: typ==='priv'?null:nextNr('er'),
-    shop: t.beschreibung||'Kontoauszug',
-    date: t.datum||new Date().toISOString().split('T')[0],
-    brutto: Math.abs(t.betrag),
-    net: typ==='priv'?null:Math.round(Math.abs(t.betrag)/1.19*100)/100,
-    mwst: typ==='priv'?null:Math.round((Math.abs(t.betrag)-Math.abs(t.betrag)/1.19)*100)/100,
-    mwstRate: typ==='priv'?null:19,
-    cat:v.kat, payment:'Karte',
-    items:[], image:null, savedAt:Date.now(),
-    istAbo:false, garantieBis:null, isDigitalScreen:false, screenType:null
-  };
-
-  try{
-    await dbadd(item);
-    // Status updaten
-    const updated=alle.map(x=>String(x.id)===String(id)?{...x,status:'erfasst_'+typ}:x);
-    kontoSave(updated);
-    toast('Erfasst als '+(typ==='priv'?'Privat':'Business')+' ✓','ok');
-    if(typ==='biz') renderMwst();
-    renderHome();
-    renderKontoBuchungen();
-    updKontoStatus();
-    // Erneut abgleichen damit neue Belege gematcht werden
-    setTimeout(async()=>{await kontoAbgleichAlle();renderKontoBuchungen();},300);
-  }catch(e){toast('Fehler: '+e.message,'er');}
-}
-
-function kontoIgnoriere(id){
-  const alle=kontoLoad();
-  const updated=alle.map(x=>String(x.id)===String(id)?{...x,status:'ignoriert'}:x);
-  kontoSave(updated);
-  renderKontoBuchungen();
-  updKontoStatus();
-}
-
-function kontoAllesLoeschen(){
-  if(!confirm('Alle Kontoauszug-Daten löschen?')) return;
-  localStorage.removeItem(KONTO_STORE);
-  renderKontoBuchungen();
-  updKontoStatus();
-  toast('Kontoauszug-Daten gelöscht','ok');
-}
-
-// ════════════════════════════════════════════════════════
-// ██ MODUL: SCHNELLEINGABE (Privat ohne Foto)
-// WHY: Kleine Bar-Ausgaben, Eis, Trinkgeld etc. haben keine Quittung.
-// Spracheingabe über Web Speech API (nativ in iOS Safari).
-// ════════════════════════════════════════════════════════
-let micActive=false, recognition=null;
-
-function openSchnell(){
-  document.getElementById('sDate').value=new Date().toISOString().split('T')[0];
-  document.getElementById('sShop').value='';
-  document.getElementById('sBrutto').value='';
-  document.getElementById('micTranscript').style.display='none';
-  document.getElementById('micTranscript').textContent='';
-  document.getElementById('schnellOvl').classList.add('on');
-}
-function closeSchnell(){document.getElementById('schnellOvl').classList.remove('on');stopMic();}
-function closeSchnellOuter(e){if(e.target===document.getElementById('schnellOvl'))closeSchnell();}
-
-function toggleMic(){
-  if(micActive) stopMic();
-  else startMic();
-}
-
-function startMic(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){toast('Spracheingabe nicht unterstützt','er');return;}
-  recognition=new SR();
-  recognition.lang='de-DE';
-  recognition.continuous=false;
-  recognition.interimResults=true;
-  recognition.onstart=()=>{
-    micActive=true;
-    document.getElementById('micBtn').style.background='rgba(192,64,64,.15)';
-    document.getElementById('micBtn').style.borderColor='rgba(192,64,64,.4)';
-    document.getElementById('micBtn').style.color='var(--red)';
-    document.getElementById('micLbl').textContent='🔴 Aufnahme läuft …';
-    document.getElementById('micTranscript').style.display='block';
-    document.getElementById('micTranscript').textContent='…';
-  };
-  recognition.onresult=e=>{
-    const transcript=Array.from(e.results).map(r=>r[0].transcript).join('');
-    document.getElementById('micTranscript').textContent=transcript;
-    if(e.results[e.results.length-1].isFinal) parseSprachEingabe(transcript);
-  };
-  recognition.onerror=()=>stopMic();
-  recognition.onend=()=>stopMic();
-  recognition.start();
-}
-
-function stopMic(){
-  micActive=false;
-  if(recognition) try{recognition.stop();}catch(_){}
-  recognition=null;
-  document.getElementById('micBtn').style.background='';
-  document.getElementById('micBtn').style.borderColor='';
-  document.getElementById('micBtn').style.color='';
-  document.getElementById('micLbl').textContent='🎤 Sprechen';
-}
-
-// WHY: Einfaches NLP – erkennt Betrag und Kategorie aus Freitext
-// z.B. "Eis 2,50 Lebensmittel" oder "Kaffee 3 Euro bar"
-function parseSprachEingabe(text){
-  const t=text.toLowerCase();
-
-  // Betrag extrahieren: "2,50" "3 euro" "1.80"
-  const betragMatch=t.match(/(\d+[.,]\d{1,2}|\d+)\s*(?:euro|€|eur)?/);
-  if(betragMatch){
-    const betrag=parseFloat(betragMatch[1].replace(',','.'));
-    if(betrag>0) document.getElementById('sBrutto').value=betrag.toFixed(2);
-  }
-
-  // Kategorie erkennen
-  const v=guessKategorie(text);
-  document.getElementById('sCat').value=v.kat;
-
-  // Shop-Name: alles vor dem Betrag
-  const shopRaw=text.replace(/\d+[.,]?\d*\s*(?:euro|€|eur)?/i,'').replace(/\s+/g,' ').trim();
-  if(shopRaw) document.getElementById('sShop').value=shopRaw.charAt(0).toUpperCase()+shopRaw.slice(1);
-}
-
-async function saveSchnell(){
-  const shop=document.getElementById('sShop').value.trim()||'Schnelleingabe';
-  const brutto=parseFloat(document.getElementById('sBrutto').value)||0;
-  if(!brutto){toast('Bitte Betrag eingeben','er');return;}
-  const item={
-    type:'priv',belegNr:null,
-    shop,
-    date:document.getElementById('sDate').value||new Date().toISOString().split('T')[0],
-    brutto,net:null,mwst:null,mwstRate:null,
-    cat:document.getElementById('sCat').value,
-    payment:document.getElementById('sPay').value,
-    items:[],image:null,savedAt:Date.now(),
-    istAbo:false,garantieBis:null,isDigitalScreen:false,screenType:null
-  };
-  try{
-    await dbadd(item);
-    toast(shop+' ('+fm(brutto)+' €) gespeichert ✓','ok');
-    closeSchnell();
-    renderPrivatBelege();
-    renderHome();
-  }catch(e){toast('Fehler: '+e.message,'er');}
-}
-
-// ════════════════════════════════════════════════════════
-// ██ MODUL: PRIVAT KREISDIAGRAMM + OPTIMIERUNGSPOTENTIAL
-// WHY: Nutzer soll sofort sehen wo das Geld hingeht
-// und wie viel theoretisch gespart werden könnte.
-// ════════════════════════════════════════════════════════
-
-// Farben für Kategorien – konsistent
-const KATFARBEN={
-  'Lebensmittel':'#4a9e6b','Restaurant':'#c07030','Elektronik':'#4a80c0',
-  'Kleidung':'#9b59b6','Tanken':'#e74c3c','Haushalt':'#27ae60',
-  'Gesundheit':'#1abc9c','Freizeit':'#f39c12','Reise':'#3498db','Sonstiges':'#7f8c8d'
-};
-
-// Kategorien wo Einsparpotential realistisch ist (in %)
-const KATSPARPOT={'Restaurant':0.30,'Kleidung':0.25,'Elektronik':0.20,'Freizeit':0.25,'Reise':0.15,'Sonstiges':0.10};
-
-// WHY: Diagramm nach einzelnen POSITIONEN (items) – nicht Kategorien.
-// So sieht man z.B. "Gemüse 3,20€ · Brot 1,80€ · Milch 1,20€" statt nur "Lebensmittel"
-// Palette generiert – für viele verschiedene Artikel
-function itemColor(i){
-  const pal=['#4a9e6b','#4a80c0','#c07030','#9b59b6','#e74c3c','#27ae60',
-             '#1abc9c','#f39c12','#3498db','#7f8c8d','#e67e22','#2ecc71',
-             '#8e44ad','#c0392b','#16a085','#d35400','#2980b9','#27ae60'];
-  return pal[i%pal.length];
-}
-
-function renderPrivatChart(belege){
-  const wrap=document.getElementById('privChartWrap');
-  const optCard=document.getElementById('privOptCard');
-  if(!belege||!belege.length){
-    wrap.style.display='none';
-    if(optCard)optCard.style.display='none';
-    return;
-  }
-
-  // WHY: Alle items aus allen Belegen aggregieren
-  const byItem={};
-  let totalItems=0;
-  belege.forEach(b=>{
-    if(b.items&&b.items.length){
-      b.items.forEach(it=>{
-        const name=(it.name||'Sonstiges').trim();
-        const v=parseFloat(it.price)||0;
-        byItem[name]=(byItem[name]||0)+v;
-        totalItems+=v;
-      });
-    }
-  });
-
-  // Wenn keine Items → fallback auf Kategorien
-  const useItems=totalItems>0;
-  const byCat={};
-  if(!useItems){
-    belege.forEach(b=>{const k=b.cat||'Sonstiges';byCat[k]=(byCat[k]||0)+(b.brutto||0);});
-  }
-
-  const rawEntries=useItems
-    ? Object.entries(byItem).sort((a,b)=>b[1]-a[1])
-    : Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
-
-  // Top 12 anzeigen, Rest als "Sonstiges" zusammenfassen
-  let entries=rawEntries.slice(0,12);
-  if(rawEntries.length>12){
-    const restSum=rawEntries.slice(12).reduce((s,[,v])=>s+v,0);
-    if(restSum>0) entries.push(['Sonstiges',restSum]);
-  }
-
-  const total=entries.reduce((s,[,v])=>s+v,0);
-  if(!total){wrap.style.display='none';if(optCard)optCard.style.display='none';return;}
-
-  // Einsparpotential (einfache 15% Schätzung auf Gesamtausgaben)
-  if(optCard){
-    document.getElementById('privOptBetrag').textContent=fm(total*0.15)+' €';
-    optCard.style.display='flex';
-  }
-
-  // SVG Donut
-  const svg=document.getElementById('privPieChart');
-  const cx=55,cy=55,r=48,ri=22;
-  let startAngle=-Math.PI/2;
-  let paths='';
-  entries.forEach(([name,val],i)=>{
-    const angle=(val/total)*Math.PI*2;
-    const endAngle=startAngle+angle;
-    const x1=cx+r*Math.cos(startAngle),y1=cy+r*Math.sin(startAngle);
-    const x2=cx+r*Math.cos(endAngle),y2=cy+r*Math.sin(endAngle);
-    const ix1=cx+ri*Math.cos(startAngle),iy1=cy+ri*Math.sin(startAngle);
-    const ix2=cx+ri*Math.cos(endAngle),iy2=cy+ri*Math.sin(endAngle);
-    const large=angle>Math.PI?1:0;
-    paths+=`<path d="M${x1.toFixed(1)},${y1.toFixed(1)} A${r},${r} 0 ${large},1 ${x2.toFixed(1)},${y2.toFixed(1)} L${ix2.toFixed(1)},${iy2.toFixed(1)} A${ri},${ri} 0 ${large},0 ${ix1.toFixed(1)},${iy1.toFixed(1)} Z" fill="${itemColor(i)}" stroke="var(--bg)" stroke-width="1.5"/>`;
-    startAngle=endAngle;
-  });
-  // Mittlerer Text: Gesamtsumme
-  paths+=`<text x="55" y="51" text-anchor="middle" font-size="12" font-weight="300" fill="var(--txt)" font-family="Inter,sans-serif">${fm(total)}</text>`;
-  paths+=`<text x="55" y="63" text-anchor="middle" font-size="8" font-weight="300" fill="var(--txt3)" font-family="Inter,sans-serif">gesamt</text>`;
-  svg.innerHTML=paths;
-  wrap.style.display='block';
-
-  // Legende
-  const leg=document.getElementById('privPieLegend');
-  leg.innerHTML=entries.map(([name,val],i)=>{
-    const pct=Math.round(val/total*100);
-    return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
-      <div style="width:8px;height:8px;border-radius:50%;background:${itemColor(i)};flex-shrink:0"></div>
-      <span style="color:var(--txt2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${eh(name)}</span>
-      <span style="color:var(--txt3);flex-shrink:0;margin-left:6px">${fm(val)} €</span>
-    </div>`;
-  }).join('');
-}
-
-// ════════════════════════════════════════════════════════
-// ██ MODUL: VERPFLEGUNGSPAUSCHALE & FAHRTENERFASSUNG
-// WHY: Freelancer können pro Außentermin Verpflegungspauschale
-// absetzen. Geo nur auf Knopfdruck (kein Background-Tracking).
-// Reverse Geocoding via OpenStreetMap Nominatim (kostenlos).
-// ════════════════════════════════════════════════════════
-
-let verpflBesuch=null; // aktiver Besuch {start, lat, lon, adresse}
-let verpflTimerInterval=null;
-const VERPFL_KEY='bsp_verpfl_fahrten';
-
-// Pauschale nach Stunden (§4 Abs.5 EStG Inland 2024)
-function calcPauschale(h){
-  if(h>=24) return 28;
-  if(h>=14) return 14;
-  if(h>=8)  return 8;
-  return 0;
-}
-
-// Luftlinienabstand in km (Haversine)
-function haversineKm(lat1,lon1,lat2,lon2){
-  const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
-  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
-  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-}
-
-function saveBetriebsstaette(){
-  const v=document.getElementById('bsAdresse').value.trim();
-  if(!v){toast('Adresse eingeben','er');return;}
-  localStorage.setItem('bsp_bs',v);
-  document.getElementById('bsHint').textContent='✓ Gespeichert als Betriebsstätte.';
-  toast('Betriebsstätte gespeichert','ok');
-}
-
-async function verpflAnkunft(){
-  const btn=document.getElementById('btnAnkunft');
-  btn.disabled=true;btn.textContent='⏳ Standort …';
-
-  navigator.geolocation.getCurrentPosition(async pos=>{
-    const {latitude:lat,longitude:lon}=pos.coords;
-
-    // Reverse Geocoding via Nominatim (kein API Key nötig)
-    let adresse='Unbekannter Standort';
-    try{
-      const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=de`,
-        {headers:{'User-Agent':'BelegScanPro/1.0'}});
-      const d=await r.json();
-      const a=d.address||{};
-      adresse=[a.road,a.house_number,a.postcode,a.city||a.town||a.village].filter(Boolean).join(' ');
-    }catch(e){}
-
-    verpflBesuch={start:Date.now(),lat,lon,adresse};
-
-    // Entfernung zur Betriebsstätte
-    let kmText='–';
-    const bsGespeichert=localStorage.getItem('bsp_bs_coords');
-    if(bsGespeichert){
-      try{
-        const {lat:bLat,lon:bLon}=JSON.parse(bsGespeichert);
-        kmText=haversineKm(lat,lon,bLat,bLon).toFixed(1)+' km';
-      }catch(_){}
-    }
-
-    // Anzeige
-    const info=document.getElementById('verpflStandortInfo');
-    info.style.display='block';
-    info.innerHTML=`<div style="font-size:11px;color:var(--txt3);margin-bottom:4px">📍 Aktueller Standort</div>
-      <div style="font-weight:300;color:var(--txt)">${eh(adresse)}</div>
-      <div style="font-size:11px;color:var(--txt3);margin-top:4px">Entfernung Betriebsstätte: ${kmText} (Luftlinie)</div>`;
-
-    document.getElementById('verpflActiveCard').style.display='block';
-    document.getElementById('verpflActiveInfo').textContent=`📍 ${eh(adresse)}`;
-    document.getElementById('verpflStartInfo').textContent=`Gestartet: ${new Date(verpflBesuch.start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr`;
-
-    // WHY: Timer alle Sekunde aktualisieren
-    if(verpflTimerInterval) clearInterval(verpflTimerInterval);
-    verpflTimerInterval=setInterval(()=>{
-      if(!verpflBesuch){clearInterval(verpflTimerInterval);return;}
-      const diff=Math.floor((Date.now()-verpflBesuch.start)/1000);
-      const h=Math.floor(diff/3600).toString().padStart(2,'0');
-      const m=Math.floor((diff%3600)/60).toString().padStart(2,'0');
-      const s=(diff%60).toString().padStart(2,'0');
-      const el=document.getElementById('verpflTimer');
-      if(el) el.textContent=`${h}:${m}:${s}`;
-      updVerpflTages();
-    },1000);
-
-    btn.disabled=false;
-    btn.innerHTML='<span style="font-size:18px">📍</span><span>Ich bin hier</span><span style="font-size:10px;color:var(--txt3)">Standort aktualisieren</span>';
-    document.getElementById('btnAbfahrt').disabled=false;
-    updVerpflTages();
-    toast('Standort erfasst: '+adresse.substring(0,40),'ok');
-
-  }, err=>{
-    btn.disabled=false;btn.innerHTML='<span style="font-size:18px">📍</span><span>Ich bin hier</span><span style="font-size:10px;color:var(--txt3)">Standort erfassen</span>';
-    toast('Standort-Zugriff verweigert – Bitte in Einstellungen erlauben','er');
-  },{enableHighAccuracy:false,timeout:10000,maximumAge:30000});
-}
-
-async function verpflAbfahrt(){
-  if(!verpflBesuch){toast('Zuerst Ankunft erfassen','wr');return;}
-  const endTime=Date.now();
-  const h=(endTime-verpflBesuch.start)/3600000;
-  const pauschale=calcPauschale(h);
-
-  const fahrt={
-    id:Date.now(),
-    datum:new Date().toISOString().split('T')[0],
-    adresse:verpflBesuch.adresse,
-    lat:verpflBesuch.lat,lon:verpflBesuch.lon,
-    startTs:verpflBesuch.start,endTs:endTime,
-    h:Math.round(h*10)/10,
-    pauschale
-  };
-
-  // Speichern
-  const existing=JSON.parse(localStorage.getItem(VERPFL_KEY)||'[]');
-  existing.unshift(fahrt);
-  localStorage.setItem(VERPFL_KEY,JSON.stringify(existing.slice(0,200))); // max 200
-
-  verpflBesuch=null;
-  if(verpflTimerInterval){clearInterval(verpflTimerInterval);verpflTimerInterval=null;}
-  document.getElementById('verpflActiveCard').style.display='none';
-  const timerEl=document.getElementById('verpflTimer');if(timerEl)timerEl.textContent='00:00:00';
-  document.getElementById('verpflStandortInfo').style.display='none';
-  document.getElementById('btnAbfahrt').disabled=true;
-
-  updVerpflTages();
-  renderVerpflFahrten();
-  toast(`Besuch erfasst · ${Math.round(h*10)/10}h · Pauschale: ${pauschale} €`,'ok');
-}
-
-function updVerpflTages(){
-  if(!verpflBesuch){
-    document.getElementById('verpflStunden').textContent='0h';
-    document.getElementById('verpflPauschale').textContent='0 €';
-    return;
-  }
-  const h=(Date.now()-verpflBesuch.start)/3600000;
-  document.getElementById('verpflStunden').textContent=Math.round(h*10)/10+'h';
-  document.getElementById('verpflPauschale').textContent=calcPauschale(h)+' €';
-  document.getElementById('verpflKm').textContent='– km'; // Geo nur auf Knopfdruck
-}
-
-function renderVerpflFahrten(){
-  const fahrten=JSON.parse(localStorage.getItem(VERPFL_KEY)||'[]');
-  const now=new Date();
-  const monat=String(now.getMonth()+1).padStart(2,'0');
-  const jahr=now.getFullYear();
-  const dieserMonat=fahrten.filter(f=>(f.datum||'').startsWith(`${jahr}-${monat}`));
-
-  const summe=dieserMonat.reduce((s,f)=>s+(f.pauschale||0),0);
-  document.getElementById('verpflMonatsSumme').textContent=summe+' €';
-
-  const l=document.getElementById('verpflFahrtenList');
-  if(!dieserMonat.length){
-    l.innerHTML='<div class="empty" style="padding:16px 0"><p>Keine Fahrten diesen Monat.</p></div>';
-    return;
-  }
-  l.innerHTML=dieserMonat.map(f=>`
-    <div style="display:flex;align-items:center;justify-content:space-between;
-      padding:9px 0;border-bottom:1px solid var(--br);font-size:12px;font-weight:300">
-      <div>
-        <div style="color:var(--txt)">${fd(f.datum)}</div>
-        <div style="font-size:10px;color:var(--txt3);margin-top:2px">${eh(f.adresse||'–')} · ${f.h}h</div>
-      </div>
-      <div style="color:var(--gold);font-size:13px">${f.pauschale} €</div>
-    </div>`).join('');
-}
-
-async function geocodeBetriebsstaette(){
-  const adresse=localStorage.getItem('bsp_bs');
-  if(!adresse)return;
-  try{
-    const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(adresse)}&format=json&limit=1`,
-      {headers:{'User-Agent':'BelegScanPro/1.0'}});
-    const d=await r.json();
-    if(d&&d[0]){
-      localStorage.setItem('bsp_bs_coords',JSON.stringify({lat:parseFloat(d[0].lat),lon:parseFloat(d[0].lon)}));
-    }
-  }catch(e){}
-}
-
-function initVerpflView(){
-  const bs=localStorage.getItem('bsp_bs');
-  if(bs){
-    document.getElementById('bsAdresse').value=bs;
-    document.getElementById('bsHint').textContent='✓ Gespeichert. Tippe OK um zu aktualisieren.';
-    geocodeBetriebsstaette(); // Koordinaten im Hintergrund holen
-  }
-  renderVerpflFahrten();
-  updVerpflTages();
-}
-
-// ════════════════════════════════════════════════════════
-// ██ MODUL: API-KOSTEN-TRACKER
-// WHY: Nutzer soll sehen wie viel API-Guthaben verbraucht wurde.
-// Sonnet 4.5: Input $3/1M Tokens, Output $15/1M Tokens (ca. Schätzung)
-// Bilder: ca. 1000-4000 Input-Tokens je nach Größe
-// ════════════════════════════════════════════════════════
-const API_COST_KEY='bsp_api_costs';
-// Preise in $ pro 1000 Tokens (claude-sonnet-4-5 Schätzung)
-const COST_IN=0.003, COST_OUT=0.015;
-
-function trackApiCost(typ, imgB64Len=0){
-  // Input-Token-Schätzung: Bild ca. imgLen/750 + Prompt ~300 Tokens
-  const imgTokens=imgB64Len>0?Math.round(imgB64Len/750):0;
-  const promptTokens=400;
-  const outputTokens=800; // Schätzung Output
-  const inputCost=(imgTokens+promptTokens)/1000*COST_IN;
-  const outputCost=outputTokens/1000*COST_OUT;
-  const callCost=inputCost+outputCost;
-
-  const data=JSON.parse(localStorage.getItem(API_COST_KEY)||'{"calls":0,"cost":0}');
-  data.calls++;
-  data.cost+=callCost;
-  data.last=new Date().toISOString();
-  localStorage.setItem(API_COST_KEY,JSON.stringify(data));
-  updApiCostDisplay();
-}
-
-function updApiCostDisplay(){
-  const data=JSON.parse(localStorage.getItem(API_COST_KEY)||'{"calls":0,"cost":0}');
-  const costEur=data.cost*0.92;
-  const avgEur=data.calls>0?(costEur/data.calls):0;
-  // Spar-Tipp kontextabhängig
-  let sparTipp='';
-  if(data.calls>20) sparTipp='Tipp: Gute Beleuchtung beim Foto spart KI-Tokens.';
-  else if(data.calls>5) sparTipp='Tipp: Unleserliche Belege lieber manuell eingeben.';
-  // Settings
-  const el=document.getElementById('apiCostDisp');
-  if(el) el.innerHTML=`<span style="color:var(--txt)">${data.calls} KI-Calls</span> · <span style="color:var(--gold)">~${costEur.toFixed(3)} € verbraucht</span>`
-    +`<div style="font-size:10px;color:var(--txt3);margin-top:3px">ø ${avgEur.toFixed(4)} €/Call · Als Betriebsausgabe absetzbar</div>`
-    +(sparTipp?`<div style="font-size:10px;color:var(--silv);margin-top:2px">💡 ${sparTipp}</div>`:'')
-    +`<div style="font-size:10px;color:var(--txt3);margin-top:3px">⚠️ Anthropic (US): Reverse Charge §13b – kein DE-MwSt-Ausweis, selbst abzuführen + abziehbar.</div>`;
-  // Home mini-card
-  const homeEl=document.getElementById('apiCostHome');
-  const homeCard=document.getElementById('apiCostCard');
-  if(homeEl){
-    homeEl.innerHTML=`<span style="color:var(--txt2)">${data.calls} API-Calls</span> · <span style="color:var(--gold)">~${costEur.toFixed(3)} €</span>`
-      +`<div style="font-size:10px;color:var(--txt3);margin-top:2px">Betriebsausgabe absetzbar · RC §13b</div>`;
-    if(homeCard) homeCard.style.display=data.calls>0?'flex':'none';
-  }
-}
-
-
-// ════════════════════════════════════════════════════════
-// ██ MODUL: KONTEXT-HILFE
-// WHY: Jeder Bereich hat einen (?) Button der sofort erklärt
-// was dieser Bereich tut und wie er zu bedienen ist.
-// ════════════════════════════════════════════════════════
-const HILFE = {
-  home: {
-    title: '🏠 Startseite',
-    text: `Die Startseite zeigt eine Übersicht deiner wichtigsten Kennzahlen.\n\n• KI-Effizienz: Scans, gesparte Zeit und Ersparnis vs. Steuerberater\n• API-Verbrauch: Geschätzte Kosten deines Anthropic-Guthabens\n• Zuletzt erfasst: Deine letzten Belege je nach Modus\n\nMit dem Toggle wechselst du zwischen Business- und Privat-Modus.`,
-    links: ['scanner','belege','priv']
-  },
-  scanner: {
-    title: '📸 Scanner',
-    text: `Fotografiere oder wähle ein Bild deines Belegs.\n\n• Eingangsrechnung (ER): Rechnungen die du bezahlt hast → Vorsteuer absetzbar\n• Ausgangsrechnung (AR): Rechnungen die du gestellt hast → MwSt abführen\n\nDie KI liest alle Felder automatisch aus. Alles ist manuell korrigierbar.\nNach der Analyse: 🎙️ Erklärung sprechen für Korrekturen per Stimme.\n\n⚠️ Ohne API Key: Felder manuell ausfüllen.`,
-    links: ['belege','mwst']
-  },
-  belege: {
-    title: '📋 Belege',
-    text: `Alle gespeicherten Eingangs- und Ausgangsrechnungen.\n\n• Tippe auf einen Beleg für Details und Stempel-Export\n• Filter: nach Typ (ER/AR), Kategorie und Suche\n• Volltext-Suche durchsucht auch erkannte Artikel\n• CSV-Export für externe Buchhaltung\n\nBelege werden lokal in deinem Browser gespeichert (IndexedDB).`,
-    links: ['mwst','steuer']
-  },
-  mwst: {
-    title: '💶 Mehrwertsteuer',
-    text: `Übersicht deiner MwSt-Situation.\n\n• Eingenommene MwSt (AR): aus Ausgangsrechnungen → abführen\n• Vorsteuer (ER): aus Eingangsrechnungen → zurückbekommen\n• Zahllast (rot): AR-MwSt minus Vorsteuer = zu überweisen\n• Erstattung (grün): Mehr Vorsteuer als MwSt eingenommen\n\nMwSt-befreit: Finanzamt, Ärzte, ÖPNV, Behörden, Notare.\nReverse Charge (§13b): Nicht-DE-Anbieter wie Anthropic, Adobe, AWS.`,
-    links: ['steuer','belege']
-  },
-  steuer: {
-    title: '📊 Einkommensteuer',
-    text: `Schätzung deiner Einkommensteuer nach §32a EStG.\n\n• Einnahmen: Summe aller AR-Nettobeiträge\n• Betriebsausgaben: Summe aller ER-Nettobeiträge\n• Gewinn = Einnahmen − Ausgaben − manueller Freibetrag\n\nDer Gauge zeigt in welcher Steuerstufe du dich befindest.\n\n⚠️ Nur Schätzung – kein Ersatz für einen Steuerberater.`,
-    links: ['mwst']
-  },
-  priv: {
-    title: '🏠 Privatausgaben',
-    text: `Privater Bereich – vollständig getrennt von Business.\n\n• Hier landen alle Belege im Privat-Modus\n• Schnelleingabe (⚡): Für kleine Ausgaben ohne Quittung\n• Spracheingabe: KI erkennt Betrag und Kategorie\n• Kreisdiagramm: Ausgaben nach Artikeln vom Kassenzettel\n• KI-Monatsanalyse: Analysiert alle Belege des aktuellen Monats\n\nPrivat-Belege beeinflussen nie MwSt oder Steuer.`,
-    links: ['home','konto']
-  },
-  konto: {
-    title: '🏦 Kontoauszug-Abgleich',
-    text: `Vergleicht deine Kontoauszüge mit gespeicherten Belegen.\n\n1. Fotos hochladen: Einzeln oder mehrere gleichzeitig\n2. Alle analysieren starten: KI liest alle Buchungen aus\n3. Abgleich: ±0,50 € und ±3 Tage werden automatisch gematcht\n4. Unbekannte: Als Privat oder Business erfassen oder ignorieren\n\nAlle Buchungen bleiben gespeichert – auch nach Tab-Wechsel.\nSteuerberater-Export enthält nur Business-Buchungen.`,
-    links: ['belege','priv']
-  },
-  verpfl: {
-    title: '🚗 Fahrt & Verpflegung',
-    text: `Erfasse Außentermine und Fahrten mit dem privaten Auto.\n\nVerpflegungspauschale §4 Abs. 5 EStG:\n• ab 8h = 8 €, ab 14h = 14 €, 24h = 28 €\n• Timer läuft ab "Ich bin hier"\n\nKilometerpauschale (privates Auto):\n• 0,30 €/km als Betriebsausgabe\n• Start/Ziel eingeben oder GPS nutzen\n• Entfernung wird automatisch berechnet`,
-    links: ['steuer']
-  },
-  settings: {
-    title: '⚙️ Einstellungen',
-    text: `Hier konfigurierst du BelegScan Pro.\n\n• API Key: Dein Anthropic Claude Key (sk-ant-…)\n  Erstellen unter: console.anthropic.com → API Keys\n• Stempel: Firmenstempel für PDF-Exporte\n• Land: Deutschland / Österreich / Schweiz\n• API-Verbrauch: Kosten, Betriebsausgabe-Hinweis, Spar-Tipps\n\nAlle Daten bleiben lokal auf deinem Gerät.`,
-    links: ['scanner']
-  }
-};
-
-function openHelp(thema){
-  const h=HILFE[thema]||{title:'Hilfe',text:'Keine Hilfe für diesen Bereich verfügbar.',links:[]};
-  document.getElementById('helpTitle').textContent=h.title;
-  document.getElementById('helpText').style.whiteSpace='pre-wrap';
-  document.getElementById('helpText').textContent=h.text;
-  const linksEl=document.getElementById('helpLinks');
-  linksEl.innerHTML=(h.links||[]).map(l=>{
-    const lt=HILFE[l];
-    return lt?`<button class="btn btn-g btn-sm" onclick="openHelp('${l}')" style="font-size:11px">${lt.title}</button>`:'';
-  }).join('');
-  document.getElementById('helpOvl').classList.add('on');
-}
-function closeHelp(){ document.getElementById('helpOvl').classList.remove('on'); }
-function closeHelpOuter(e){ if(e.target===document.getElementById('helpOvl')) closeHelp(); }
-
-
-// ════════════════════════════════════════════════════════
-// ██ MODUL: SPRACH-KOMMENTAR
-// WHY: Nach jeder KI-Analyse oder im Privat-Tab kann der Nutzer
-// per Sprache erklären wie eine Buchung einzuordnen ist.
-// KI verarbeitet den Kommentar und schlägt Änderungen vor.
-// Auch für komplexe Vorgänge (Autoverkauf, Mischbuchungen).
-// ════════════════════════════════════════════════════════
-let voiceRec = null;
-let voiceActive = false;
-
-function startVoiceComment(kontext, onResult) {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    toast('Spracheingabe nicht unterstützt – bitte Chrome/Safari', 'er');
-    return;
-  }
-  if (voiceActive) { stopVoiceComment(); return; }
-
-  voiceRec = new SpeechRecognition();
-  voiceRec.lang = 'de-DE';
-  voiceRec.continuous = false;
-  voiceRec.interimResults = false;
-  voiceActive = true;
-
-  const btn = document.getElementById('voiceCommentBtn');
-  if (btn) { btn.style.background = 'rgba(192,64,64,.2)'; btn.style.borderColor = 'var(--red)'; btn.innerHTML = '🔴 Sprechen …'; }
-
-  voiceRec.onresult = e => {
-    const text = e.results[0][0].transcript;
-    voiceActive = false;
-    if (btn) { btn.style.background = ''; btn.style.borderColor = ''; btn.innerHTML = '🎙️ Erklärung sprechen'; }
-    verarbeiteSprachKommentar(text, kontext, onResult);
-  };
-
-  voiceRec.onerror = e => {
-    voiceActive = false;
-    if (btn) { btn.style.background = ''; btn.style.borderColor = ''; btn.innerHTML = '🎙️ Erklärung sprechen'; }
-    toast('Mikrofon-Fehler: ' + e.error, 'er');
-  };
-
-  voiceRec.onend = () => {
-    voiceActive = false;
-    if (btn) { btn.style.background = ''; btn.style.borderColor = ''; btn.innerHTML = '🎙️ Erklärung sprechen'; }
-  };
-
-  voiceRec.start();
-}
-
-function stopVoiceComment() {
-  if (voiceRec) { try { voiceRec.stop(); } catch(_) {} }
-  voiceActive = false;
-}
-
-async function verarbeiteSprachKommentar(text, kontext, onResult) {
-  apiKey = localStorage.getItem('cak') || apiKey || '';
-  if (!apiKey) { toast('API Key fehlt', 'er'); return; }
-
-  // Zeige was erkannt wurde
-  toast('Erkannt: "' + text.substring(0, 60) + (text.length > 60 ? '…' : '') + '"', 'ok');
-
-  const prompt = `Du bist ein Buchhalter-Assistent. Der Nutzer hat eine Sprachnotiz zu einer Buchung hinterlassen.
-Kontext (aktuell erfasste Daten): ${JSON.stringify(kontext)}
-Sprachnotiz des Nutzers: "${text}"
-
-Analysiere die Sprachnotiz und antworte NUR mit JSON:
-{
-  "aktion": "update" | "split" | "move" | "info",
-  "erklaerung": "kurze Erklärung was du tust (max 1 Satz)",
-  "aenderungen": {
-    "typ": "er" | "ar" | "priv" | null,
-    "cat": "Kategorie oder null",
-    "brutto": Zahl oder null,
-    "mwst": Zahl oder null,
-    "mwstRate": Zahl oder null,
-    "shop": "Name oder null",
-    "notiz": "Freitext-Notiz oder null"
-  },
-  "split": [
-    {"typ":"er","brutto":0,"cat":"","beschreibung":""},
-    {"typ":"priv","brutto":0,"cat":"","beschreibung":""}
-  ] | null
-}
-
-Beispiele:
-- "Das ist mein Autoverkauf, zu 1/3 bar, 2/3 überwiesen" → split oder move
-- "Das gehört zu Business, da MwSt absetzbar" → typ: "er"
-- "Das war eigentlich Privat" → typ: "priv"
-- "Keine MwSt, war ein Finanzamt" → mwst: 0, mwstRate: 0`;
-
-  trackApiCost('voice');
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 600, messages: [{ role: 'user', content: prompt }] })
-    });
-    const data = await resp.json();
-    const raw = data.content?.filter(c => c.type === 'text').map(c => c.text).join('') || '';
-    let result;
-    try { result = JSON.parse(raw.trim()); } catch(_) {
-      const m = raw.match(/\{[\s\S]*\}/); if (m) result = JSON.parse(m[0]);
-    }
-    if (result && onResult) onResult(result, text);
-  } catch(e) { toast('Fehler: ' + e.message, 'er'); }
-}
-
-// Zeigt das Sprach-Ergebnis als Modal mit Bestätigungs-Buttons
-function zeigeSprachErgebnis(result, originalText, kontext, onConfirm) {
-  const modal = document.getElementById('voiceResultModal');
-  if (!modal) return;
-  const a = result.aenderungen || {};
-  let html = `<div style="font-size:11px;font-weight:300;color:var(--txt3);margin-bottom:8px">Erkannt: "${originalText}"</div>`;
-  html += `<div style="font-size:13px;font-weight:300;color:var(--txt);margin-bottom:12px">💡 ${result.erklaerung || ''}</div>`;
-
-  if (result.aktion === 'split' && result.split) {
-    html += '<div style="font-size:11px;color:var(--txt3);margin-bottom:6px">AUFTEILEN IN:</div>';
-    result.split.forEach((s,i) => {
-      html += `<div style="background:var(--s2);border-radius:var(--r8);padding:8px 10px;margin-bottom:6px;font-size:12px">
-        <span style="color:var(--txt2)">${s.typ==='priv'?'🏠 Privat':'💼 Business'}</span> · ${fm(s.brutto||0)} € · ${s.beschreibung||s.cat||''}
-      </div>`;
-    });
-  } else {
-    if (a.typ) html += `<div style="font-size:12px;color:var(--txt2);margin-bottom:4px">Typ: ${a.typ==='priv'?'🏠 Privat':a.typ==='ar'?'AR Ausgangsrechnung':'ER Eingangsrechnung'}</div>`;
-    if (a.cat) html += `<div style="font-size:12px;color:var(--txt2);margin-bottom:4px">Kategorie: ${a.cat}</div>`;
-    if (a.mwst===0) html += `<div style="font-size:12px;color:var(--grn);margin-bottom:4px">MwSt-befreit (0 €)</div>`;
-    if (a.notiz) html += `<div style="font-size:11px;color:var(--txt3);margin-top:4px">${a.notiz}</div>`;
-  }
-
-  html += `<div style="display:flex;gap:8px;margin-top:14px">
-    <button class="btn btn-gold btn-sm" style="flex:1;justify-content:center" onclick="bestaetigenSprachErgebnis()">✓ Übernehmen</button>
-    <button class="btn btn-g btn-sm" onclick="closeVoiceResult()">Abbrechen</button>
-  </div>`;
-
-  document.getElementById('voiceResultContent').innerHTML = html;
-  modal.classList.add('on');
-  window._pendingVoiceResult = { result, onConfirm };
-}
-
-function bestaetigenSprachErgebnis() {
-  const p = window._pendingVoiceResult;
-  if (p && p.onConfirm) p.onConfirm(p.result);
-  closeVoiceResult();
-}
-function closeVoiceResult() {
-  const m = document.getElementById('voiceResultModal');
-  if (m) m.classList.remove('on');
-  window._pendingVoiceResult = null;
-}
-
-// Kontext aus Scanner-Formular lesen
-function getFormKontext() {
-  if (scanType === 'priv') {
-    return {
-      typ: 'priv',
-      shop: document.getElementById('pShop')?.value || '',
-      betrag: document.getElementById('pBrutto')?.value || '',
-      cat: document.getElementById('pCat')?.value || '',
-      items: curRes?.items || []
-    };
-  }
-  return {
-    typ: scanType,
-    shop: document.getElementById('rShop')?.value || '',
-    brutto: document.getElementById('rBrutto')?.value || '',
-    mwst: document.getElementById('rMwst')?.value || '',
-    net: document.getElementById('rNet')?.value || '',
-    cat: document.getElementById('rCat')?.value || ''
-  };
-}
-
-// Ergebnis des Sprach-Kommentars auf Formular anwenden
-function onVoiceCommentResult(result, originalText) {
-  zeigeSprachErgebnis(result, originalText, getFormKontext(), (res) => {
-    const a = res.aenderungen || {};
-    if (scanType !== 'priv') {
-      // Business-Formular updaten
-      if (a.typ && (a.typ === 'er' || a.typ === 'ar')) {
-        scanType = a.typ;
-        document.querySelectorAll('.scan-tab').forEach(t => t.classList.remove('on'));
-        const tab = document.getElementById('tab_' + a.typ);
-        if (tab) tab.classList.add('on');
-      }
-      if (a.cat) { const el = document.getElementById('rCat'); if (el) el.value = a.cat; }
-      if (a.mwst === 0) {
-        const mEl = document.getElementById('rMwst'); if (mEl) mEl.value = '0.00';
-        const nEl = document.getElementById('rNet'); if (nEl) nEl.value = document.getElementById('rBrutto')?.value || '0';
-        const rEl = document.getElementById('rRate'); if (rEl) rEl.value = '0';
-      }
-      if (a.brutto != null) { const el = document.getElementById('rBrutto'); if (el) el.value = a.brutto.toFixed(2); }
-    } else {
-      // Privat-Formular
-      if (a.cat) { const el = document.getElementById('pCat'); if (el) el.value = a.cat; }
-      if (a.brutto != null) { const el = document.getElementById('pBrutto'); if (el) el.value = a.brutto.toFixed(2); }
-    }
-    toast('Übernommen ✓', 'ok');
-  });
-}
-
-// ════════════════════════════════════════════════════════
-// ██ MODUL: KILOMETERPAUSCHALE v2 – Routen-Tagebuch
-// WHY: Privates Auto für Dienstreisen → 0,30 €/km
-// §9 Abs. 1 Nr. 4 EStG. Workflow: "Ich bin jetzt hier"
-// statt GPS-Dauerverfolgung. OSRM für echtes Routing.
-// Multi-Stop: Mehrere Ziele an einem Tag möglich.
-// ════════════════════════════════════════════════════════
-const KM_STORE       = 'bsp_km_fahrten';
-const KM_ROUTE_KEY   = 'bsp_km_aktiv';   // aktive Route im localStorage
-const KM_PAUSCHALE   = 0.30;
-const OSRM_URL       = 'https://router.project-osrm.org/route/v1/driving/';
-
-function kmLoad(){ try{ return JSON.parse(localStorage.getItem(KM_STORE)||'[]'); }catch(_){ return []; } }
-function kmSave(arr){ localStorage.setItem(KM_STORE, JSON.stringify(arr)); }
-function kmAktivLoad(){ try{ return JSON.parse(localStorage.getItem(KM_ROUTE_KEY)||'null'); }catch(_){ return null; } }
-function kmAktivSave(r){ if(r) localStorage.setItem(KM_ROUTE_KEY, JSON.stringify(r)); else localStorage.removeItem(KM_ROUTE_KEY); }
-
-// ── Routing via OSRM (kostenlos, kein Key nötig) ──────
-async function osrmRoute(lat1, lon1, lat2, lon2){
-  try{
-    const url = OSRM_URL + lon1+','+lat1+';'+lon2+','+lat2+'?overview=false';
-    const r = await fetch(url, {headers:{'User-Agent':'BelegScanPro/1.0'}});
-    const d = await r.json();
-    if(d.code==='Ok' && d.routes && d.routes[0]){
-      return {
-        km:   Math.round(d.routes[0].distance / 100) / 10,   // Meter → km
-        minuten: Math.round(d.routes[0].duration / 60)       // Sekunden → Minuten
-      };
-    }
-  }catch(_){}
-  return null;
-}
-
-// ── Heimatort-Koordinaten holen ───────────────────────
-function kmHeimat(){
-  const adr   = localStorage.getItem('bsp_bs') || '';
-  const coord = JSON.parse(localStorage.getItem('bsp_bs_coords')||'null');
-  return { adr, coord };
-}
-
-// ── initKmView: View aufbauen ─────────────────────────
-function initKmView(){
-  const d = document.getElementById('kmRouteDatum');
-  if(d && !d.value) d.value = new Date().toISOString().split('T')[0];
-  const md = document.getElementById('kmManDatum');
-  if(md && !md.value) md.value = new Date().toISOString().split('T')[0];
-  // Heimatort anzeigen
-  const h = kmHeimat();
-  const el = document.getElementById('kmHeimatAnzeige');
-  if(el) el.textContent = h.adr || ' – noch nicht gesetzt (in Fahrt-Tab oben eintragen)';
-  renderKmAktiv();
-  renderKmMonat();
-}
-
-// ── Route starten ─────────────────────────────────────
-function kmRouteStarten(){
-  const h = kmHeimat();
-  if(!h.adr){ toast('Bitte zuerst Betriebsstätte / Heimatort eintragen (oben)','wr'); return; }
-  const anlass = document.getElementById('kmRouteName').value.trim();
-  if(!anlass){ toast('Bitte Anlass eingeben','wr'); return; }
-  const datum  = document.getElementById('kmRouteDatum').value || new Date().toISOString().split('T')[0];
-  const aktiv = {
-    datum, anlass,
-    heimat: { adr: h.adr, coord: h.coord },
-    stops: [],       // { nr, ziel, adr, coord, kmVon, zeitMin, ts }
-    gestartetAt: Date.now()
-  };
-  kmAktivSave(aktiv);
-  renderKmAktiv();
-  toast('Route gestartet – fahr los! 🚗','ok');
-}
-
-// ── "Ich bin hier angekommen" ─────────────────────────
-
-// ── "Ich bin hier" SOFORT (primärer Workflow) ────────
-// WHY: Berechnung IMMER ab Heimatort, egal wo der Nutzer
-// heute Nacht war. Das ist steuerlich korrekt nach §9 EStG.
-async function kmIchBinHierSofort(){
-  const h = kmHeimat();
-  if(!h.adr){
-    toast('Bitte zuerst Betriebsstätte / Heimatort oben eintragen','wr');
-    document.getElementById('bsAdr').focus();
-    return;
-  }
-  const btn = document.querySelector('[onclick="kmIchBinHierSofort()"]');
-  if(btn){ btn.disabled=true; btn.innerHTML='<span>⏳</span><span>Standort wird ermittelt …</span>'; }
-  try{
-    const pos = await new Promise((res,rej)=>
-      navigator.geolocation.getCurrentPosition(res,rej,{timeout:12000,maximumAge:30000}));
-    const lat = pos.coords.latitude;
-    const lon = pos.coords.longitude;
-    // Reverse Geocoding
-    const revR = await fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json',
-      {headers:{'User-Agent':'BelegScanPro/1.0'}});
-    const geo = await revR.json();
-    const a = geo.address||{};
-    const adr = [a.road,a.house_number,a.city||a.town||a.village].filter(Boolean).join(' ')
-      || (lat.toFixed(4)+', '+lon.toFixed(4));
-    // OSRM Route: IMMER von Heimatort (egal wo Nutzer übernachtet hat)
-    let kmVon=0, zeitMin=0;
-    if(h.coord){
-      const route = await osrmRoute(h.coord.lat, h.coord.lon, lat, lon);
-      if(route){ kmVon=route.km; zeitMin=route.minuten; }
-      else { kmVon = Math.round(haversine(h.coord.lat,h.coord.lon,lat,lon)*1.3*10)/10; }
-    }
-    kmZielSheetOeffnen({
-      adr, lat, lon,
-      vonAdr: h.adr,
-      kmVon, zeitMinOSRM: zeitMin,
-      stopNr: 1,
-      sofort: true   // Flag: kein aktives Route-Objekt, direkt speichern
-    });
-  }catch(e){
-    // GPS fehlgeschlagen → Sheet trotzdem öffnen für manuelle Eingabe
-    const h2 = kmHeimat();
-    kmZielSheetOeffnen({adr:'',lat:null,lon:null,vonAdr:h2.adr,kmVon:0,zeitMinOSRM:0,stopNr:1,sofort:true});
-    toast('GPS nicht verfügbar – bitte manuell eingeben','wr');
-  }finally{
-    if(btn){ btn.disabled=false; btn.innerHTML='<span style="font-size:18px">📍</span><span>Ich bin hier angekommen</span>'; }
-  }
-}
-
-async function kmIchBinHier(){
-  const aktiv = kmAktivLoad();
-  if(!aktiv){ toast('Keine aktive Route','er'); return; }
-
-  const btn = document.querySelector('[onclick="kmIchBinHier()"]');
-  if(btn){ btn.disabled=true; btn.innerHTML='<span>⏳</span><span>Standort wird ermittelt …</span>'; }
-
-  try{
-    // GPS-Koordinaten einmalig holen
-    const pos = await new Promise((res,rej)=>
-      navigator.geolocation.getCurrentPosition(res,rej,{timeout:12000,maximumAge:30000}));
-    const lat = pos.coords.latitude;
-    const lon = pos.coords.longitude;
-
-    // Reverse Geocoding → Adresse
-    const revResp = await fetch(
-      'https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json',
-      {headers:{'User-Agent':'BelegScanPro/1.0'}});
-    const geo = await revResp.json();
-    const adr_obj = geo.address||{};
-    const adr = [adr_obj.road, adr_obj.house_number, adr_obj.city||adr_obj.town||adr_obj.village]
-      .filter(Boolean).join(' ') || (lat.toFixed(4)+', '+lon.toFixed(4));
-
-    // Letzten Punkt bestimmen (Heimatort oder letzter Stop)
-    const letzterStop = aktiv.stops.length > 0 ? aktiv.stops[aktiv.stops.length-1] : null;
-    const vonCoord    = letzterStop ? letzterStop.coord : aktiv.heimat.coord;
-    const vonAdr      = letzterStop ? letzterStop.adr   : aktiv.heimat.adr;
-
-    let kmVon = null, zeitMinOSRM = null;
-    if(vonCoord){
-      const route = await osrmRoute(vonCoord.lat, vonCoord.lon, lat, lon);
-      if(route){ kmVon = route.km; zeitMinOSRM = route.minuten; }
-    }
-    // Fallback: Haversine mit Straßenfaktor 1,3
-    if(!kmVon && vonCoord){
-      kmVon = Math.round(haversine(vonCoord.lat, vonCoord.lon, lat, lon) * 1.3 * 10) / 10;
-    }
-
-    // Sheet öffnen für Bestätigung / Zeitkorrektur
-    kmZielSheetOeffnen({
-      adr, lat, lon,
-      vonAdr, kmVon: kmVon||0,
-      zeitMinOSRM: zeitMinOSRM||0,
-      stopNr: aktiv.stops.length + 1
-    });
-
-  }catch(e){
-    toast('GPS-Fehler: '+e.message,'er');
-    // Fallback: manuelles Ziel-Sheet ohne GPS
-    kmZielSheetOeffnen({adr:'', lat:null, lon:null, vonAdr: aktiv.heimat.adr, kmVon:0, zeitMinOSRM:0, stopNr: aktiv.stops.length+1});
-  }finally{
-    if(btn){ btn.disabled=false; btn.innerHTML='<span style="font-size:16px">📍</span><span>Ich bin hier angekommen</span>'; }
-  }
-}
-
-// ── Ziel-Bestätigungs-Sheet ───────────────────────────
-function kmZielSheetOeffnen(data){
-  const ovl = document.getElementById('kmZielOvl');
-  if(!ovl) return;
-  document.getElementById('kmZielAdr').value    = data.adr||'';
-  document.getElementById('kmZielKm').value     = data.kmVon||'';
-  document.getElementById('kmZielMin').value    = data.zeitMinOSRM||'';
-  document.getElementById('kmZielNr').value     = data.stopNr||1;
-  document.getElementById('kmZielLat').value    = data.lat||'';
-  document.getElementById('kmZielLon').value    = data.lon||'';
-  document.getElementById('kmZielVonAdr').textContent = data.vonAdr||'';
-  // OSRM-Zeit anzeigen
-  const hint = document.getElementById('kmZielOsrmHint');
-  if(hint){
-    if(data.zeitMinOSRM>0){
-      hint.textContent = 'OSRM-Routenzeit: ca. '+data.zeitMinOSRM+' min · Stau oder Umweg? Zeit oben korrigieren.';
-      hint.style.display='block';
-    } else { hint.style.display='none'; }
-  }
-  // Sofort-Modus: Anlass-Feld einblenden, hidden flag setzen
-  const sofortEl = document.getElementById('kmZielSofort');
-  if(sofortEl) sofortEl.value = data.sofort ? '1' : '0';
-  const anlassRow = document.getElementById('kmZielAnlassRow');
-  if(anlassRow) anlassRow.style.display = data.sofort ? 'block' : 'none';
-  ovl.classList.add('on');
-}
-
-function kmZielSchliessen(){ document.getElementById('kmZielOvl').classList.remove('on'); }
-
-async function kmZielSpeichern(){
-  const adr    = document.getElementById('kmZielAdr').value.trim();
-  const km     = parseFloat(document.getElementById('kmZielKm').value)||0;
-  const minStr = document.getElementById('kmZielMin').value;
-  const lat    = parseFloat(document.getElementById('kmZielLat').value)||null;
-  const lon    = parseFloat(document.getElementById('kmZielLon').value)||null;
-  const nr     = parseInt(document.getElementById('kmZielNr').value)||1;
-  const sofort = document.getElementById('kmZielSofort').value==='1';
-  const vonAdrEl = document.getElementById('kmZielVonAdr');
-  const vonAdr   = vonAdrEl ? vonAdrEl.textContent : '';
-  const anlassEl = document.getElementById('kmZielAnlass');
-  const anlass   = anlassEl ? anlassEl.value.trim() : '';
-
-  if(!adr){ toast('Bitte Ziel-Adresse eingeben','wr'); return; }
-
-  if(sofort){
-    // Sofort-Modus: direkt als ER-Beleg speichern
-    if(!km){ toast('Bitte km eingeben','wr'); return; }
-    const betrag = Math.round(km * KM_PAUSCHALE * 100)/100;
-    const datum  = new Date().toISOString().split('T')[0];
-    const bNr    = nextNr('er');
-    const item   = {
-      type:'er', belegNr:bNr,
-      shop:'Fahrt: '+vonAdr+' → '+adr,
-      date: datum, net:betrag, mwst:0, brutto:betrag, mwstRate:0,
-      cat:'Fahrtkosten', payment:'Pauschale',
-      items:[{name:km.toFixed(1)+' km × 0,30 €', price:betrag}],
-      image:null, savedAt:Date.now(),
-      istAbo:false, garantieBis:null, reverseCharge:false, bewirtung:null,
-      kmFahrt:{ von:vonAdr, nach:adr, km, anlass, zeitMin:minStr?parseInt(minStr):null }
-    };
-    try{
-      await dbadd(item);
-      const fahrten = kmLoad();
-      fahrten.push({id:Date.now(),datum,von:vonAdr,nach:adr,km,betrag,anlass,belegNr:bNr});
-      kmSave(fahrten);
-      kmZielSchliessen();
-      renderKmMonat(); renderHome();
-      toast(bNr+' gespeichert · '+km.toFixed(1)+' km · '+fm(betrag)+' € ✓','ok');
-    }catch(e){ toast('Fehler: '+e.message,'er'); }
-    return;
-  }
-
-  // Tages-Route Modus
-  const aktiv = kmAktivLoad();
-  if(!aktiv) return;
-  aktiv.stops.push({
-    nr, adr, coord: (lat&&lon)?{lat,lon}:null,
-    kmVon: km, zeitMin: minStr?parseInt(minStr):null,
-    ts: Date.now()
-  });
-  kmAktivSave(aktiv);
-  kmZielSchliessen();
-  renderKmAktiv();
-  toast('Stop '+nr+' gespeichert – '+km.toFixed(1)+' km ✓','ok');
-}
-
-// ── Route abschließen und als Belege speichern ────────
-async function kmRouteAbschliessen(){
-  const aktiv = kmAktivLoad();
-  if(!aktiv || !aktiv.stops.length){
-    toast('Keine Stops erfasst – bitte zuerst "Ich bin hier" drücken','wr'); return;
-  }
-  if(!confirm('Route abschließen und als Belege speichern?')) return;
-
-  const fahrten = kmLoad();
-  let savedCount = 0;
-
-  for(const stop of aktiv.stops){
-    if(!stop.kmVon || stop.kmVon<=0) continue;
-    const betrag = Math.round(stop.kmVon * KM_PAUSCHALE * 100)/100;
-    const vonAdr = stop.nr===1 ? aktiv.heimat.adr : aktiv.stops[stop.nr-2].adr;
-    const nr = nextNr('er');
-    const item = {
-      type:'er', belegNr:nr,
-      shop:'Fahrt: '+(vonAdr||'Start')+' → '+stop.adr,
-      date: aktiv.datum,
-      net:betrag, mwst:0, brutto:betrag, mwstRate:0,
-      cat:'Fahrtkosten', payment:'Pauschale',
-      items:[{name:stop.kmVon.toFixed(1)+' km × 0,30 €', price:betrag}],
-      image:null, savedAt:Date.now(),
-      istAbo:false, garantieBis:null, reverseCharge:false, bewirtung:null,
-      kmFahrt:{ von:vonAdr, nach:stop.adr, km:stop.kmVon, anlass:aktiv.anlass, zeitMin:stop.zeitMin }
-    };
-    try{ await dbadd(item); } catch(_){}
-    fahrten.push({ id:Date.now()+stop.nr, datum:aktiv.datum,
-      von:vonAdr, nach:stop.adr, km:stop.kmVon, betrag,
-      anlass:aktiv.anlass, belegNr:nr });
-    savedCount++;
-  }
-
-  kmSave(fahrten);
-  kmAktivSave(null); // aktive Route löschen
-  renderKmAktiv();
-  renderKmMonat();
-  renderHome();
-  try{ renderMwst(); }catch(_){}
-  toast(savedCount+' Fahrten gespeichert · Route abgeschlossen ✓','ok');
-}
-
-// ── Aktive Route rendern ──────────────────────────────
-function renderKmAktiv(){
-  const aktiv     = kmAktivLoad();
-  const sofortCard= document.getElementById('kmSofortCard');
-  const aktivCard = document.getElementById('kmAktivCard');
-  if(!aktivCard) return;
-
-  if(!aktiv){
-    if(sofortCard) sofortCard.style.display='block';
-    aktivCard.style.display='none'; return;
-  }
-  if(sofortCard) sofortCard.style.display='none';
-  aktivCard.style.display='block';
-
-  const datumEl = document.getElementById('kmAktivDatum');
-  if(datumEl) datumEl.textContent = aktiv.datum+' · '+aktiv.anlass;
-
-  const stopsEl = document.getElementById('kmAktivStops');
-  if(!stopsEl) return;
-
-  let html = '<div style="font-size:11px;font-weight:300;color:var(--txt3);margin-bottom:6px">Heimatort: <strong style="color:var(--txt)">'+eh(aktiv.heimat.adr)+'</strong></div>';
-  if(!aktiv.stops.length){
-    html += '<div style="font-size:11px;font-weight:300;color:var(--txt2);font-style:italic">Noch keine Stops – fahr los und drücke "Ich bin hier"</div>';
-  } else {
-    let totalKm=0;
-    aktiv.stops.forEach((s,i)=>{
-      totalKm += s.kmVon||0;
-      html += '<div style="background:var(--s2);border-radius:var(--r8);padding:7px 10px;margin-bottom:5px;display:flex;justify-content:space-between">'
-        +'<div><div style="font-size:11px;font-weight:300;color:var(--txt)">'+i+'→ '+eh(s.adr)+'</div>'
-        +(s.zeitMin?'<div style="font-size:10px;color:var(--txt3)">'+s.zeitMin+' min</div>':'')+'</div>'
-        +'<div style="font-size:12px;font-weight:300;color:var(--grn)">'+s.kmVon.toFixed(1)+' km</div></div>';
-    });
-    const total = Math.round(totalKm * KM_PAUSCHALE * 100)/100;
-    html += '<div style="font-size:12px;font-weight:300;color:var(--gold);margin-top:4px">Gesamt bisher: '+totalKm.toFixed(1)+' km · '+fm(total)+' €</div>';
-  }
-  stopsEl.innerHTML = html;
-}
-
-// ── Monatsübersicht ───────────────────────────────────
-function renderKmMonat(){
-  const fahrten = kmLoad();
-  const now = new Date();
-  const mo = String(now.getMonth()+1).padStart(2,'0');
-  const yr = now.getFullYear();
-  const dieserMonat = fahrten.filter(f=>(f.datum||'').startsWith(yr+'-'+mo));
-  const wrap = document.getElementById('kmMonatWrap');
-  if(!wrap) return;
-  if(!dieserMonat.length){ wrap.style.display='none'; return; }
-  wrap.style.display='block';
-  const gesamtKm     = dieserMonat.reduce((s,f)=>s+(f.km||0),0);
-  const gesamtBetrag = dieserMonat.reduce((s,f)=>s+(f.betrag||0),0);
-  document.getElementById('kmMonatList').innerHTML = dieserMonat.map(f=>
-    '<div style="background:var(--s2);border-radius:var(--r8);padding:8px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">'
-    +'<div><div style="font-size:12px;font-weight:300;color:var(--txt)">'+eh(f.von||'')+'→ '+eh(f.nach||'')+'</div>'
-    +'<div style="font-size:10px;font-weight:300;color:var(--txt3)">'+fd(f.datum)+' · '+eh(f.anlass||'')+' · '+(f.km||0).toFixed(1)+' km</div></div>'
-    +'<div style="font-size:13px;font-weight:300;color:var(--grn)">'+fm(f.betrag||0)+' €</div></div>'
-  ).join('');
-  document.getElementById('kmMonatSumme').innerHTML =
-    '<div style="display:flex;justify-content:space-between">'
-    +'<span style="color:var(--txt3)">'+dieserMonat.length+' Fahrten · '+gesamtKm.toFixed(1)+' km gesamt</span>'
-    +'<strong style="color:var(--grn)">'+fm(gesamtBetrag)+' €</strong></div>';
-}
-
-// ── Manuelle Einzelfahrt speichern ────────────────────
-async function kmManSpeichern(){
-  const von    = document.getElementById('kmManVon').value.trim();
-  const nach   = document.getElementById('kmManNach').value.trim();
-  const datum  = document.getElementById('kmManDatum').value;
-  const km     = parseFloat(document.getElementById('kmManKm').value)||0;
-  const anlass = document.getElementById('kmManAnlass').value.trim();
-  if(!von||!nach){ toast('Bitte Start und Ziel eingeben','wr'); return; }
-  if(!km){ toast('Bitte km eingeben','wr'); return; }
-  const betrag = Math.round(km * KM_PAUSCHALE * 100)/100;
-  const nr = nextNr('er');
-  const item = {
-    type:'er', belegNr:nr,
-    shop:'Fahrt: '+von+' → '+nach,
-    date: datum||new Date().toISOString().split('T')[0],
-    net:betrag, mwst:0, brutto:betrag, mwstRate:0,
-    cat:'Fahrtkosten', payment:'Pauschale',
-    items:[{name:km.toFixed(1)+' km × 0,30 €', price:betrag}],
-    image:null, savedAt:Date.now(),
-    istAbo:false, garantieBis:null, reverseCharge:false, bewirtung:null,
-    kmFahrt:{ von, nach, km, anlass }
-  };
-  try{
-    await dbadd(item);
-    const fahrten = kmLoad();
-    fahrten.push({ id:Date.now(), datum, von, nach, km, betrag, anlass, belegNr:nr });
-    kmSave(fahrten);
-    toast(nr+' gespeichert · '+km.toFixed(1)+' km · '+fm(betrag)+' €','ok');
-    renderKmMonat(); renderHome();
-    document.getElementById('kmManVon').value='';
-    document.getElementById('kmManNach').value='';
-    document.getElementById('kmManKm').value='';
-    document.getElementById('kmManAnlass').value='';
-  }catch(e){ toast('Fehler: '+e.message,'er'); }
-}
-
-// ════════════════════════════════════════════════════════
-// ██ MODUL: BEWIRTUNGSBELEG §4 Abs. 5 EStG
-// WHY: Restaurantbelege als Business-Ausgabe absetzbar wenn
-// Bewirtung von Geschäftspartnern mit Anlass dokumentiert.
-// Nur 70% absetzbar (§4 Abs. 5 Nr. 2 EStG).
-// ════════════════════════════════════════════════════════
-const RESTAURANT_KEYWORDS = /restaurant|café|cafe|bistro|pizzeria|sushi|döner|doner|mcdonald|burger king|subway|nordsee|vapiano|l'osteria|dean david|hans im glück|peter pane|enchilada|ritzi|wirtschaft|gasthaus|gasthof|biergarten|bar |lounge|steakhouse|grill /i;
-
-function istRestaurant(shopName){
-  return RESTAURANT_KEYWORDS.test((shopName||'').toLowerCase());
-}
-
-// Bewirtungsbeleg-Sheet öffnen (nach Speichern eines Restaurant-ER)
-function openBewirtungSheet(belegId){
-  const ovl = document.getElementById('bewirtOvl');
-  if(!ovl) return;
-  document.getElementById('bewirtBelegId').value = belegId||'';
-  document.getElementById('bewirtDatum').value = new Date().toISOString().split('T')[0];
-  document.getElementById('bewirtPersonen').value = '2';
-  document.getElementById('bewirtPartner').value = '';
-  document.getElementById('bewirtAnlass').value = '';
-  document.getElementById('bewirtOrt').value = '';
-  ovl.classList.add('on');
-}
-
-function closeBewirtung(){
-  const ovl = document.getElementById('bewirtOvl');
-  if(ovl) ovl.classList.remove('on');
-}
-
-async function saveBewirtung(){
-  const belegId = document.getElementById('bewirtBelegId').value;
-  const partner = document.getElementById('bewirtPartner').value.trim();
-  const anlass = document.getElementById('bewirtAnlass').value.trim();
-  const personen = parseInt(document.getElementById('bewirtPersonen').value)||2;
-  const ort = document.getElementById('bewirtOrt').value.trim();
-
-  if(!partner||!anlass){ toast('Bitte Geschäftspartner und Anlass ausfüllen','wr'); return; }
-
-  // Beleg in DB updaten mit Bewirtungs-Daten
-  try{
-    const all = await dba();
-    const beleg = all.find(b=>String(b.id)===String(belegId));
-    if(beleg){
-      beleg.bewirtung = { partner, anlass, personen, ort };
-      beleg.cat = 'Bewirtung';
-      // WHY: Nur 70% steuerlich absetzbar
-      beleg.bewirtungAbsetzbar = Math.round((beleg.net||beleg.brutto||0)*0.7*100)/100;
-      // Update via delete + re-add
-      await new Promise((res,rej)=>{
-        const tx=db.transaction('b','readwrite');
-        const store=tx.objectStore('b');
-        const req=store.put(beleg);
-        req.onsuccess=()=>res(); req.onerror=()=>rej();
-      });
-    }
-    toast('Bewirtungsbeleg gespeichert ✓','ok');
-    closeBewirtung();
-    renderHome();
-  }catch(e){ toast('Fehler: '+e.message,'er'); }
-}
-
-// Nach Restaurant-ER scannen → Frage ob Bewirtungsbeleg
-function checkBewirtungPrompt(item){
-  if(item.type==='er' && istRestaurant(item.shop)){
-    // Kurz warten dann fragen
-    setTimeout(()=>{
-      const yes = confirm(`"${item.shop}" klingt nach einem Restaurant. Willst du einen Bewirtungsbeleg mit Geschäftspartner ausfüllen?
-(Nur 70% absetzbar – aber korrekt dokumentiert)`);
-      if(yes) openBewirtungSheet(item.id);
-    }, 600);
-  }
-}
-
-
-// ════════════════════════════════════════════════════════
-// ██ MODUL: STEUERBERATER-EXPORT
-// WHY: Steuerberater braucht strukturierten Überblick:
-// Business-Belege + Business-Kontoauszüge + RC-Aufstellung
-// + Bewirtungsbelege + Kilometerfahrten – alles in einem ZIP.
-// ════════════════════════════════════════════════════════
-
-async function exportSteuerberater(){
-  const btn = document.getElementById('stbExportBtn');
-  if(btn){ btn.disabled=true; btn.textContent='⏳ Erstelle Export …'; }
-  try{
-    const all = await dba();
-    const now = new Date();
-    const yr = now.getFullYear();
-    const mo = String(now.getMonth()+1).padStart(2,'0');
-
-    // Nur Business-Belege
-    const bizBelege = all.filter(b => b.type !== 'priv');
-    const erBelege  = bizBelege.filter(b => b.type === 'er');
-    const arBelege  = bizBelege.filter(b => b.type === 'ar');
-    const rcBelege  = erBelege.filter(b => b.reverseCharge);
-    const bewBelege = erBelege.filter(b => b.bewirtung);
-    const kmBelege  = erBelege.filter(b => b.kmFahrt);
-
-    // Business-Kontoauszüge
-    const kontoRaw = JSON.parse(localStorage.getItem('bsp_konto_v2')||'[]');
-    const kontoBiz = kontoRaw.filter(k => k.status==='erfasst_biz'||k.status==='abgeglichen');
-
-    // Kilometerfahrten
-    const kmFahrten = JSON.parse(localStorage.getItem('bsp_km_fahrten')||'[]');
-
-    // ── Zahlen berechnen ──
-    const einnahmen = arBelege.reduce((s,b)=>s+(b.net||0),0);
-    const ausgaben  = erBelege.reduce((s,b)=>s+(b.net||0),0);
-    const gewinn    = einnahmen - ausgaben;
-    const mwstAr    = arBelege.reduce((s,b)=>s+(b.mwst||0),0);
-    const mwstEr    = erBelege.reduce((s,b)=>s+(b.mwst||0),0);
-    const zahllast  = mwstAr - mwstEr;
-    const rcSumme   = rcBelege.reduce((s,b)=>{ const i=getRcInfo(b.brutto||0,b.mwstRate||19); return s+i.rcMwst; },0);
-    const kmGesamt  = kmFahrten.reduce((s,f)=>s+(f.km||0),0);
-    const kmBetrag  = kmFahrten.reduce((s,f)=>s+(f.betrag||0),0);
-
-    // ── CSV-Inhalt bauen ──
-    const csvLines = [];
-    const sep = ';';
-
-    // Header-Block
-    csvLines.push(`BelegScan Pro – Steuerberater-Export`);
-    csvLines.push(`Erstellt am:${sep}${now.toLocaleDateString('de-DE')} ${now.toLocaleTimeString('de-DE')}`);
-    csvLines.push(`Zeitraum:${sep}${yr}`);
-    csvLines.push('');
-
-    // Zusammenfassung
-    csvLines.push('=== ZUSAMMENFASSUNG ===');
-    csvLines.push(`Einnahmen (AR netto)${sep}${einnahmen.toFixed(2)} €`);
-    csvLines.push(`Ausgaben (ER netto)${sep}${ausgaben.toFixed(2)} €`);
-    csvLines.push(`Gewinn (Schätzung)${sep}${gewinn.toFixed(2)} €`);
-    csvLines.push(`MwSt-Einnahmen (AR)${sep}${mwstAr.toFixed(2)} €`);
-    csvLines.push(`Vorsteuer (ER)${sep}${mwstEr.toFixed(2)} €`);
-    csvLines.push(`MwSt-Zahllast${sep}${zahllast.toFixed(2)} €`);
-    csvLines.push(`Reverse Charge §13b (selbst abzuführen)${sep}${rcSumme.toFixed(2)} €`);
-    csvLines.push(`Kilometerpauschale gesamt${sep}${kmBetrag.toFixed(2)} € (${kmGesamt.toFixed(1)} km)`);
-    csvLines.push('');
-
-    // ER-Belege
-    csvLines.push('=== EINGANGSRECHNUNGEN ===');
-    csvLines.push(['BelegNr','Datum','Anbieter','Kategorie','Netto €','MwSt €','Brutto €','RC','Bewirtung'].join(sep));
-    erBelege.forEach(b=>{
-      csvLines.push([
-        b.belegNr||'', fd(b.date), (b.shop||'').replace(/;/g,' '),
-        b.cat||'', (b.net||0).toFixed(2), (b.mwst||0).toFixed(2), (b.brutto||0).toFixed(2),
-        b.reverseCharge?'Ja §13b':'',
-        b.bewirtung?`Ja – ${(b.bewirtung.partner||'').replace(/;/g,' ')} | ${(b.bewirtung.anlass||'').replace(/;/g,' ')}`:'',
-      ].join(sep));
-    });
-    csvLines.push('');
-
-    // AR-Belege
-    csvLines.push('=== AUSGANGSRECHNUNGEN ===');
-    csvLines.push(['BelegNr','Datum','Kunde','Kategorie','Netto €','MwSt €','Brutto €'].join(sep));
-    arBelege.forEach(b=>{
-      csvLines.push([
-        b.belegNr||'', fd(b.date), (b.shop||'').replace(/;/g,' '),
-        b.cat||'', (b.net||0).toFixed(2), (b.mwst||0).toFixed(2), (b.brutto||0).toFixed(2),
-      ].join(sep));
-    });
-    csvLines.push('');
-
-    // Kontoauszüge
-    if(kontoBiz.length){
-      csvLines.push('=== KONTOAUSZUG (BUSINESS) ===');
-      csvLines.push(['Datum','Beschreibung','Betrag €','Status','Abgeglichen mit'].join(sep));
-      kontoBiz.forEach(k=>{
-        csvLines.push([
-          fd(k.datum||k.date||''), (k.text||k.beschreibung||'').replace(/;/g,' '),
-          (k.betrag||0).toFixed(2), k.status||'',
-          k.matchedBelegNr||''
-        ].join(sep));
-      });
-      csvLines.push('');
-    }
-
-    // Reverse Charge
-    if(rcBelege.length){
-      csvLines.push('=== REVERSE CHARGE §13b UStG ===');
-      csvLines.push('HINWEIS: Diese Beträge müssen in der UStVA in Zeile 52 (Steuer) + Zeile 67 (Vorsteuer) eingetragen werden.');
-      csvLines.push(['Anbieter','Datum','Netto €','RC-MwSt (19%) €','UStVA Zeile'].join(sep));
-      rcBelege.forEach(b=>{
-        const info = getRcInfo(b.brutto||0, b.mwstRate||19);
-        csvLines.push([
-          (b.shop||'').replace(/;/g,' '), fd(b.date),
-          info.netto.toFixed(2), info.rcMwst.toFixed(2),
-          '52 + 67'
-        ].join(sep));
-      });
-      csvLines.push(`Summe RC-MwSt${sep}${sep}${sep}${rcSumme.toFixed(2)} €${sep}`);
-      csvLines.push('');
-    }
-
-    // Bewirtungsbelege
-    if(bewBelege.length){
-      csvLines.push('=== BEWIRTUNGSBELEGE §4 Abs. 5 Nr. 2 EStG ===');
-      csvLines.push('HINWEIS: Nur 70% der Bewirtungskosten sind steuerlich absetzbar.');
-      csvLines.push(['Datum','Restaurant','Geschäftspartner','Anlass','Personen','Brutto €','Absetzbar 70% €'].join(sep));
-      bewBelege.forEach(b=>{
-        const bw = b.bewirtung||{};
-        csvLines.push([
-          fd(b.date), (b.shop||'').replace(/;/g,' '),
-          (bw.partner||'').replace(/;/g,' '), (bw.anlass||'').replace(/;/g,' '),
-          bw.personen||'', (b.brutto||0).toFixed(2),
-          (b.bewirtungAbsetzbar||0).toFixed(2)
-        ].join(sep));
-      });
-      csvLines.push('');
-    }
-
-    // Kilometer
-    if(kmFahrten.length){
-      csvLines.push('=== KILOMETERPAUSCHALE (PRIVATES AUTO) ===');
-      csvLines.push('Pauschale: 0,30 €/km gemäß §9 Abs. 1 Nr. 4 EStG');
-      csvLines.push(['Datum','Von','Nach','Anlass','km','Betrag €'].join(sep));
-      kmFahrten.forEach(f=>{
-        csvLines.push([
-          fd(f.datum), (f.von||'').replace(/;/g,' '), (f.nach||'').replace(/;/g,' '),
-          (f.anlass||'').replace(/;/g,' '), (f.km||0).toFixed(1), (f.betrag||0).toFixed(2)
-        ].join(sep));
-      });
-      csvLines.push(`Gesamt${sep}${sep}${sep}${sep}${kmGesamt.toFixed(1)}${sep}${kmBetrag.toFixed(2)} €`);
-      csvLines.push('');
-    }
-
-    // Als CSV-Datei herunterladen (mit BOM für Excel-Kompatibilität)
-    const bom = '\uFEFF';
-    const csvContent = bom + csvLines.join('\n');
-    const blob = new Blob([csvContent], {type:'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `BelegScanPro_Steuerberater_${yr}_${mo}.csv`;
-    document.body.appendChild(a); a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    toast('Steuerberater-Export heruntergeladen ✓','ok');
-  }catch(e){ toast('Export-Fehler: '+e.message,'er'); }
-  finally{ if(btn){ btn.disabled=false; btn.textContent='📊 Steuerberater-Export'; } }
-}
-
-// ════════════════════════════════════════════════════════
-// ██ MODUL: GOBD-PFLICHTFELD-CHECKER
-// WHY: GoBD (Grundsätze ordnungsmäßiger Buchführung)
-// schreibt vor welche Felder ein Beleg enthalten muss.
-// Unvollständige Belege werden markiert → Steuerberater sieht es.
-// ════════════════════════════════════════════════════════
-function gobdCheck(beleg){
-  const fehler = [];
-  if(!beleg.shop || beleg.shop==='Unbekannt') fehler.push('Aussteller fehlt');
-  if(!beleg.date) fehler.push('Datum fehlt');
-  if(!beleg.brutto || beleg.brutto<=0) fehler.push('Betrag fehlt');
-  if(beleg.type==='er' && beleg.mwstRate===undefined) fehler.push('MwSt-Satz fehlt');
-  if(!beleg.belegNr && beleg.type!=='priv') fehler.push('Belegnummer fehlt');
-  return fehler;
-}
-
-function gobdBadgeHtml(beleg){
-  if(beleg.type==='priv') return '';
-  const f = gobdCheck(beleg);
-  if(!f.length) return '<span style="font-size:9px;color:var(--grn);margin-left:4px">✓ GoBD</span>';
-  return `<span title="${f.join(', ')}" style="font-size:9px;color:var(--orn);margin-left:4px;cursor:help">⚠️ GoBD (${f.length})</span>`;
-}
-
-// ════════════════════════════════════════════════════════
-// ██ MODUL: DEV-CHANGELOG
-// WHY: Transparenz für Nutzer + Steuerberater welche Version
-// der App verwendet wurde. Neueste Version oben.
-// ════════════════════════════════════════════════════════
-const CHANGELOG = [
-  { v:'2.0', d:'2026-03', t:'Großes Update – Reverse Charge, Kilometer, Restaurant', items:[
-    'Kritischer JS-Syntax-Fix (App war komplett eingefroren)',
-    'Reverse Charge §13b UStG: Automatische Erkennung nicht-DE-Anbieter (Anthropic, Adobe, AWS etc.)',
-    'RC-Banner im Scanner mit MwSt-Berechnung und UStVA-Hinweis',
-    'RC-Summe im MwSt-Tab separat ausgewiesen',
-    'Kilometerpauschale: privates Auto, 0,30 €/km, GPS-Start, Nominatim-Routing',
-    'Bewirtungsbeleg §4 Abs. 5 EStG: Restaurant-Erkennung, Geschäftspartner, 70%-Absetzbarkeit',
-    'Steuerberater-Export: CSV mit Business-Belegen, Kontoauszügen, RC-Aufstellung, Bewirtung, km',
-    'GoBD-Pflichtfeld-Checker: Warnsymbol bei unvollständigen Belegen',
-    'API-Kosten-Karte: Betriebsausgabe-Hinweis, RC-Erklärung, Spar-Tipps',
-    'Hilfe-Texte (?) komplett überarbeitet',
-    'DEV-Changelog eingebaut',
-  ]},
-  { v:'1.9', d:'2026-02', t:'Kontoauszug Multi-Upload + Sprach-Kommentar', items:[
-    'Kontoauszug-Abgleich: Mehrere Fotos gleichzeitig hochladen',
-    'Buchungen akkumulieren – kein Überschreiben mehr',
-    'Sprach-Kommentar: 🎙️ Button nach Scan für KI-gestützte Korrekturen',
-    'API-Kosten-Tracker eingebaut (Settings + Home)',
-    'Kontext-Hilfe (?) in jedem Tab',
-    'Kreisdiagramm nach Artikel-Positionen (nicht Kategorien)',
-    'Verpflegungspauschale: Timer mit Echtzeit-Anzeige',
-  ]},
-  { v:'1.8', d:'2026-01', t:'Business/Privat-Modus + Verpflegungspauschale', items:[
-    'Toggle Business ↔ Privat auf Startseite',
-    'Privat-Tab mit eigener Monatsanalyse',
-    'Verpflegungspauschale: Betriebsstätte, GPS, Timer, Monatsliste',
-    'Fahrt-Tab nur im Business-Modus sichtbar',
-    'Schnelleingabe ⚡ für Privat-Ausgaben ohne Foto',
-  ]},
-  { v:'1.7', d:'2025-12', t:'Abo-Detektiv + MwSt-Ausnahmen', items:[
-    'Abo-Detektiv: erkennt digitale Streaming/SaaS-Abos',
-    'MwSt-Ausnahmen: Finanzamt, Ärzte, GEZ, ÖPNV automatisch 0%',
-    'ABO_EXCLUDE: Telekommunikation, Supermärkte nicht als Abo erkannt',
-    'Inflations-Tracker eingebaut',
-  ]},
-  { v:'1.6', d:'2025-11', t:'GoBD + Stempel + DACH', items:[
-    'Einheitlicher GoBD-Buchungsstempel (kein Stil-Wechsel mehr)',
-    'Österreich + Schweiz Support (MwSt-Sätze, Belegnummern)',
-    'Kleinunternehmer-Modus (KU)',
-    'Einkommensteuer-Gauge nach §32a EStG',
-  ]},
-  { v:'1.0', d:'2025-10', t:'Erstveröffentlichung', items:[
-    'Basisversion: Belege scannen, ER/AR, IndexedDB',
-    'KI-Analyse via Anthropic Claude API',
-    'PWA-fähig (installierbar auf iOS/Android)',
-    'Garantie-Wächter, Abo-Detektiv Basis',
-  ]},
-];
-
-function openChangelog(){
-  const ovl = document.getElementById('changelogOvl');
-  if(!ovl) return;
-  const content_el = document.getElementById('changelogContent');
-  content_el.innerHTML = CHANGELOG.map(v=>
-    `<div style="margin-bottom:16px">
-      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px">
-        <span style="font-size:13px;font-weight:400;color:var(--gold)">v${v.v}</span>
-        <span style="font-size:11px;font-weight:300;color:var(--txt3)">${v.d}</span>
-        <span style="font-size:12px;font-weight:300;color:var(--txt)">${v.t}</span>
-      </div>
-      <ul style="margin:0;padding-left:16px;list-style:disc">
-        ${v.items.map(i=>`<li style="font-size:11px;font-weight:300;color:var(--txt2);margin-bottom:3px">${i}</li>`).join('')}
-      </ul>
-    </div>`
-  ).join('<div style="border-top:1px solid var(--br);margin:12px 0"></div>');
-  ovl.classList.add('on');
-}
-
-function closeChangelog(){
-  const ovl = document.getElementById('changelogOvl');
-  if(ovl) ovl.classList.remove('on');
-}
-
-// ════════════════════════════════════════════════════════
-// ██ MODUL: REVERSE CHARGE §13b UStG
-// WHY: Nicht-DE/EU-Anbieter stellen keine MwSt aus.
-// Der Käufer muss MwSt selbst abführen – und kann sie
-// gleichzeitig als Vorsteuer abziehen (Nettoeffekt: 0).
-// Meldepflicht: UStVA Zeile 52 + Zeile 67.
-// ════════════════════════════════════════════════════════
-const RC_ANBIETER = /anthropic|openai|adobe|aws|amazon web service|google workspace|google cloud|microsoft 365|office 365|github|netflix|spotify|dropbox|slack|zoom|notion|shopify|stripe|paypal|cloudflare|digitalocean|heroku|twilio|sendgrid|mailchimp|hubspot|salesforce|figma|canva|loom|grammarly|chatgpt|midjourney|stability ai/i;
-
-function detectReverseCharge(shopName){
-  if(!shopName) return false;
-  return RC_ANBIETER.test(shopName);
-}
-
-function getRcInfo(brutto, mwstRate){
-  const rate = (mwstRate||19)/100;
-  const netto = brutto/(1+rate);
-  const rcMwst = brutto - netto;
-  return {
-    netto: Math.round(netto*100)/100,
-    rcMwst: Math.round(rcMwst*100)/100,
-    rate: mwstRate||19
-  };
-}
-
-function rcBannerHtml(shopName, brutto, mwstRate){
-  const info = getRcInfo(brutto||0, mwstRate||19);
-  return '<div style="background:rgba(200,164,90,.08);border:1px solid rgba(200,164,90,.3);'
-    +'border-radius:var(--r8);padding:10px 12px;margin-bottom:10px">'
-    +'<div style="font-size:11px;font-weight:400;color:var(--gold);margin-bottom:4px">'
-    +'⚠️ Reverse Charge §13b UStG – Nicht-DE-Anbieter</div>'
-    +'<div style="font-size:11px;font-weight:300;color:var(--txt2);line-height:1.7">'
-    +'<strong style="color:var(--txt)">'+eh(shopName)+'</strong> stellt keine deutsche MwSt aus.<br>'
-    +'→ MwSt auf Rechnung: <strong>0,00 €</strong><br>'
-    +'→ Du schuldest selbst: <strong style="color:var(--orn)">'+fm(info.rcMwst)+' €</strong> ('+info.rate+'% auf '+fm(info.netto)+' €)<br>'
-    +'→ Gleichzeitig abziehbar als Vorsteuer: <strong style="color:var(--grn)">'+fm(info.rcMwst)+' €</strong><br>'
-    +'→ Nettoeffekt: <strong>0 €</strong> | Betriebsausgabe: <strong>'+fm(info.netto)+' €</strong><br>'
-    +'<span style="color:var(--txt3)">Für Steuerberater: UStVA Zeile 52 + Zeile 67 eintragen.</span>'
-    +'</div></div>';
-}
-
 function fd(d){if(!d)return'–';return new Date(d+'T00:00:00').toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});}
 function fm(n){return(n||0).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function fmK(n){if(Math.abs(n)>=1000)return(n/1000).toLocaleString('de-DE',{minimumFractionDigits:1,maximumFractionDigits:1})+'k';return(n||0).toLocaleString('de-DE');}
@@ -5327,7 +2736,6 @@ function toast(msg,type=''){const el=document.getElementById('toast');el.textCon
 // ██ INIT
 // ════════════════════════════════════════════════════════
 function initApp(){
-  setMode(appMode);
   loadStamp();updCounters();updApiStat();updApiBanner();
   // MwSt-Sätze für aktives Land setzen
   const rRate=document.getElementById('rRate');
@@ -5337,115 +2745,7 @@ function initApp(){
 }
 
 setupPWA();
-initDB().then(()=>{initApp();checkOnboarding();}).catch(e=>toast('DB Fehler: '+e.message,'er'));
+initDB().then(()=>{checkOnboarding();}).catch(e=>toast('DB Fehler: '+e.message,'er'));
 </script>
-
-
-<!-- ── SPRACH-ERGEBNIS MODAL ── -->
-<div class="ovl" id="voiceResultModal" onclick="if(event.target===this)closeVoiceResult()">
-  <div class="sheet">
-    <div class="sh"></div>
-    <button class="sc-btn" onclick="closeVoiceResult()">✕</button>
-    <div style="font-size:14px;font-weight:300;color:var(--txt);margin-bottom:12px">🎙️ Sprach-Kommentar verarbeitet</div>
-    <div id="voiceResultContent"></div>
-  </div>
-</div>
-
-
-
-<!-- ── KM ZIEL-BESTÄTIGUNG SHEET ── -->
-<div class="ovl" id="kmZielOvl" onclick="if(event.target===this)kmZielSchliessen()">
-  <div class="sheet">
-    <div class="sh"></div>
-    <button class="sc-btn" onclick="kmZielSchliessen()">✕</button>
-    <input type="hidden" id="kmZielNr">
-    <input type="hidden" id="kmZielLat">
-    <input type="hidden" id="kmZielLon">
-    <input type="hidden" id="kmZielSofort" value="0">
-    <div style="font-size:15px;font-weight:300;color:var(--txt);margin-bottom:2px">📍 Ziel bestätigen</div>
-    <div style="font-size:11px;font-weight:300;color:var(--txt3);margin-bottom:14px">
-      Von: <span id="kmZielVonAdr" style="color:var(--txt2)">–</span>
-    </div>
-    <div class="field" style="margin-bottom:8px">
-      <label>Angekommen in (Adresse)</label>
-      <input id="kmZielAdr" class="inp" type="text" placeholder="Automatisch erkannt – bitte prüfen" style="font-size:12px">
-    </div>
-    <div class="field" id="kmZielAnlassRow" style="margin-bottom:8px;display:none">
-      <label>Anlass</label>
-      <input id="kmZielAnlass" class="inp" type="text" placeholder="z.B. Kundentermin" style="font-size:12px">
-    </div>
-    <div class="g2" style="gap:8px;margin-bottom:10px">
-      <div class="field">
-        <label>Entfernung (km)</label>
-        <input id="kmZielKm" class="inp" type="number" min="0" step="0.1" placeholder="z.B. 23.5" style="font-size:12px">
-      </div>
-      <div class="field">
-        <label>Fahrzeit (Minuten)</label>
-        <input id="kmZielMin" class="inp" type="number" min="0" step="1" placeholder="z.B. 28" style="font-size:12px">
-      </div>
-    </div>
-    <div id="kmZielOsrmHint" style="display:none;font-size:10px;font-weight:300;color:var(--txt3);
-      background:var(--s2);border-radius:var(--r8);padding:7px 10px;margin-bottom:10px;line-height:1.5">
-    </div>
-    <div style="background:rgba(200,164,90,.06);border:1px solid rgba(200,164,90,.2);border-radius:var(--r8);
-      padding:8px 12px;margin-bottom:14px;font-size:11px;font-weight:300;color:var(--txt3)">
-      💡 Stau gehabt? Fahrzeit einfach manuell korrigieren. Die km-Angabe basiert auf der tatsächlichen Route (OSRM).
-    </div>
-    <button class="btn btn-gold" onclick="kmZielSpeichern()" style="width:100%;justify-content:center">
-      Stop speichern ✓
-    </button>
-  </div>
-</div>
-
-<!-- ── BEWIRTUNGSBELEG SHEET ── -->
-<div class="ovl" id="bewirtOvl" onclick="if(event.target===this)closeBewirtung()">
-  <div class="sheet">
-    <div class="sh"></div>
-    <button class="sc-btn" onclick="closeBewirtung()">✕</button>
-    <input type="hidden" id="bewirtBelegId">
-    <div style="font-size:15px;font-weight:300;color:var(--txt);margin-bottom:4px">🍽️ Bewirtungsbeleg</div>
-    <div style="font-size:11px;font-weight:300;color:var(--txt3);margin-bottom:14px">§4 Abs. 5 Nr. 2 EStG · 70% absetzbar</div>
-    <div class="g2" style="gap:8px;margin-bottom:8px">
-      <div class="field"><label>Datum</label><input id="bewirtDatum" class="inp" type="date"></div>
-      <div class="field"><label>Personen</label><input id="bewirtPersonen" class="inp" type="number" min="1" max="50" value="2"></div>
-    </div>
-    <div class="field" style="margin-bottom:8px"><label>Geschäftspartner (Name, Firma)</label>
-      <input id="bewirtPartner" class="inp" type="text" placeholder="z.B. Max Müller, Müller GmbH"></div>
-    <div class="field" style="margin-bottom:8px"><label>Anlass / Thema</label>
-      <input id="bewirtAnlass" class="inp" type="text" placeholder="z.B. Projektbesprechung Q1 2026"></div>
-    <div class="field" style="margin-bottom:14px"><label>Ort (Restaurant)</label>
-      <input id="bewirtOrt" class="inp" type="text" placeholder="Automatisch aus Beleg"></div>
-    <div style="background:rgba(200,164,90,.06);border:1px solid rgba(200,164,90,.2);border-radius:var(--r8);padding:9px 12px;margin-bottom:14px;font-size:11px;font-weight:300;color:var(--txt3)">
-      ℹ️ Bewirtungskosten sind nur zu 70% als Betriebsausgabe absetzbar (§4 Abs. 5 Nr. 2 EStG). Dieser Nachweis ist Pflicht für den Steuerberater.
-    </div>
-    <button class="btn btn-gold" onclick="saveBewirtung()" style="width:100%;justify-content:center">Bewirtungsbeleg speichern</button>
-  </div>
-</div>
-
-
-<!-- ── CHANGELOG MODAL ── -->
-<div class="ovl" id="changelogOvl" onclick="if(event.target===this)closeChangelog()">
-  <div class="sheet" style="max-height:80vh;overflow-y:auto">
-    <div class="sh"></div>
-    <button class="sc-btn" onclick="closeChangelog()">✕</button>
-    <div style="font-size:15px;font-weight:300;color:var(--txt);margin-bottom:4px">📋 Versionshistorie</div>
-    <div style="font-size:11px;font-weight:300;color:var(--txt3);margin-bottom:14px">BelegScan Pro – alle Änderungen</div>
-    <div id="changelogContent"></div>
-  </div>
-</div>
-
-<!-- ── HILFE-MODAL ── -->
-<div class="ovl" id="helpOvl" onclick="closeHelpOuter(event)">
-  <div class="sheet" style="max-height:75vh;overflow-y:auto">
-    <div class="sh"></div>
-    <button class="sc-btn" onclick="closeHelp()">✕</button>
-    <div style="font-size:15px;font-weight:300;color:var(--txt);margin-bottom:4px" id="helpTitle">Hilfe</div>
-    <div style="font-size:13px;font-weight:300;color:var(--txt2);line-height:1.8" id="helpText"></div>
-    <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--br)">
-      <div style="font-size:10px;font-weight:300;color:var(--txt3);margin-bottom:8px">VERWANDTE HILFE-THEMEN</div>
-      <div id="helpLinks" style="display:flex;flex-wrap:wrap;gap:6px"></div>
-    </div>
-  </div>
-</div>
 </body>
 </html>
